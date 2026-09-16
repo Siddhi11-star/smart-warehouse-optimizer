@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Layout & Rack Matrix - Smart Warehouse Optimizer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-layout">
+        <!-- LEFT SIDEBAR -->
+                <aside class="sidebar">
+            <a href="index.html" class="sidebar-brand">
+                <div class="brand-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">Smart Warehouse</span>
+                    <span class="brand-subtitle">OPTIMIZATION SUITE</span>
+                </div>
+            </a>
+
+            <div class="sidebar-section-label">OPERATIONS CORE</div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item" data-nav="dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item" data-nav="products">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                    <span>Products</span>
+                </a>
+                <a href="layout.html" class="nav-item active" data-nav="layout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    <span>Warehouse Layout</span>
+                </a>
+                <a href="shelf-optimizer.html" class="nav-item" data-nav="shelf-optimizer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        <circle cx="8" cy="6" r="2" fill="currentColor"></circle>
+                        <circle cx="16" cy="12" r="2" fill="currentColor"></circle>
+                        <circle cx="10" cy="18" r="2" fill="currentColor"></circle>
+                    </svg>
+                    <span>Shelf Optimizer</span>
+                </a>
+                <a href="orders.html" class="nav-item" data-nav="orders">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Orders</span>
+                </a>
+                <a href="picking.html" class="nav-item" data-nav="picking">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <span>Picking Optimizer</span>
+                </a>
+                <a href="analytics.html" class="nav-item" data-nav="analytics">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-item" data-nav="settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-status-card">
+                <div class="status-indicator">
+                    <span class="status-pulse-dot"></span>
+                    <span class="status-label">SYSTEM ONLINE</span>
+                </div>
+                <div class="status-subtext">TSP Engine v2.4 Active</div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEWPORT -->
+        <div class="main-viewport">
+            <!-- TOP BAR -->
+            <header class="top-header">
+                <div class="search-container">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="globalSearchInput" placeholder="Search SKU, product, shelf coordinate..." class="search-input">
+                    <kbd class="shortcut-badge">⌘K</kbd>
+                </div>
+
+                <div class="header-actions">
+                    <div class="telemetry-pill">
+                        <span class="telemetry-dot"></span>
+                        <span>LIVE TELEMETRY</span>
+                    </div>
+
+                    <button class="icon-button notification-btn" title="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="badge-count">3</span>
+                    </button>
+
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" alt="Sarah Jenkins">
+                        </div>
+                        <div class="user-meta">
+                            <span class="user-name">Sarah Jenkins</span>
+                            <span class="user-role">Warehouse Director</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="content-scroll">
+                <!-- HERO TITLE & ACTION ROW -->
+                <div class="page-title-row">
+                    <div class="title-meta-group">
+                        <div class="title-tags">
+                            <h1 class="page-title" style="margin-right: 0.5rem;">Warehouse Layout</h1>
+                            <span class="pill-badge tsp-badge">FACILITY GRID 04</span>
+                        </div>
+                        <p class="page-header-desc">Interactive warehouse floor plan, shelf locations and real-time volumetric storage capacity.</p>
+                    </div>
+                    <div class="page-action-group">
+                        <button class="btn btn-outline" id="resetLayoutViewBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            <span>Reset View</span>
+                        </button>
+                        <button class="btn btn-outline" id="openAddShelfModalBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            <span>+ Add Shelf</span>
+                        </button>
+                        <button class="btn btn-primary" id="editLayoutBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                            <span>Edit Layout</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ZONE FOCUS & MAP CONTROLS BAR -->
+                <div class="zone-and-controls-bar">
+                    <div class="zone-focus-group">
+                        <span class="zone-focus-label">ZONE FOCUS:</span>
+                        <div class="zone-pills-list">
+                            <button class="layout-zone-pill active" data-zone="all">
+                                <span class="dot-crimson"></span> All Zones (96 Bays)
+                            </button>
+                            <button class="layout-zone-pill" data-zone="a">
+                                <span class="dot-crimson"></span> Zone A (Fast Runway)
+                            </button>
+                            <button class="layout-zone-pill" data-zone="b">
+                                <span class="dot-crimson"></span> Zone B (Mid-Density)
+                            </button>
+                            <button class="layout-zone-pill" data-zone="c">
+                                <span class="dot-green"></span> Zone C (Heavy High-Bays)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="map-controls-group">
+                        <button class="map-ctrl-btn" id="zoomInBtn" title="Zoom In">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                        </button>
+                        <button class="map-ctrl-btn" id="zoomOutBtn" title="Zoom Out">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                        </button>
+                        <button class="map-ctrl-btn" id="fitViewBtn" title="Fit to View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        </button>
+                        <div class="snap-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
+                            <span>SNAP 1m</span>
+                        </div>
+                        <div class="cad-sync-badge">
+                            <span class="green-dot"></span>
+                            <span>CAD Real-time Sync</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 COMPACT SUMMARY METRIC CARDS -->
+                <div class="kpi-grid layout-kpi-grid">
+                    <!-- KPI 1 -->
+                    <div class="kpi-card compact-kpi">
+                        <span class="kpi-label">TOTAL SHELVES</span>
+                        <div class="kpi-value">96</div>
+                        <div class="kpi-footer"><span class="footer-muted">4-tier bays</span></div>
+                    </div>
+                    <!-- KPI 2 -->
+                    <div class="kpi-card compact-kpi">
+                        <span class="kpi-label">OCCUPIED</span>
+                        <div class="kpi-value"><span class="crimson-text" id="kpiOccupiedVal">81</span></div>
+                        <div class="kpi-footer"><span class="footer-muted">84.4% Active</span></div>
+                    </div>
+                    <!-- KPI 3 -->
+                    <div class="kpi-card compact-kpi">
+                        <span class="kpi-label">AVAILABLE BAYS</span>
+                        <div class="kpi-value"><span class="green-text" id="kpiAvailableVal">15</span></div>
+                        <div class="kpi-footer"><span class="footer-available"><span class="available-dot"></span> Ready to stage</span></div>
+                    </div>
+                    <!-- KPI 4 -->
+                    <div class="kpi-card compact-kpi">
+                        <span class="kpi-label">AVG UTILIZATION</span>
+                        <div class="kpi-value">84.5%</div>
+                        <div class="kpi-footer"><span class="footer-muted">+2.1% this shift</span></div>
+                    </div>
+                    <!-- KPI 5 -->
+                    <div class="kpi-card compact-kpi">
+                        <div class="kpi-card-header">
+                            <span class="kpi-label">PICK WAYPOINTS</span>
+                            <span class="wave-tag">Wave #449</span>
+                        </div>
+                        <div class="kpi-value"><span class="green-text">3 Active</span></div>
+                    </div>
+                </div>
+
+                <!-- MAIN WORKSPACE: 2D FLOOR MAP + SHELF INSPECTOR -->
+                <div class="layout-main-grid">
+                    <!-- 2D FLOOR PLAN STAGE -->
+                    <div class="card map-stage-card" id="mapCanvasStage">
+                        <!-- TECHNICAL SECTOR BAR -->
+                        <div class="sector-tech-bar">
+                            <div class="sector-left">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E83A4B" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                <span class="sector-title">MAIN LOGISTICS COMPACT — SECTOR 01 (60.0M × 45.0M)</span>
+                            </div>
+                            <div class="sector-meta">
+                                <span>DATUM: [00,00] SOUTH DISPATCH</span>
+                                <span class="tsp-on-badge">DYNAMIC TSP ROUTE ON</span>
+                            </div>
+                        </div>
+
+                        <!-- MAP STAGE INTERACTIVE CONTENT -->
+                        <div class="interactive-floor-viewport" id="floorViewport">
+                            <!-- ENTRY & INCOMING RECEIVING DOCK -->
+                            <div class="dock-header-station">
+                                <div class="dock-station-left">
+                                    <div class="dock-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                                    </div>
+                                    <div class="dock-station-text">
+                                        <div class="dock-title-row">
+                                            <h3>ENTRY & INCOMING RECEIVING DOCK</h3>
+                                            <span class="scan-tag">SCAN GATE D-01</span>
+                                        </div>
+                                        <p>↓ Automated infeed scanning • 6 pallets staging • High-velocity sorting buffer</p>
+                                    </div>
+                                </div>
+                                <div class="infeed-arrow-badge">↓ INFEED</div>
+                            </div>
+
+                            <!-- AISLE A (ZONE A) -->
+                            <div class="floor-aisle-container" data-zone="a" id="aisleAContainer">
+                                <div class="floor-aisle-heading">
+                                    <div class="aisle-title-wrap">
+                                        <span class="aisle-indicator-dot dot-crimson"></span>
+                                        <span class="aisle-code-bold">AISLE A</span>
+                                        <span class="aisle-desc-text">— Fast Dispatch / High-Velocity Turnover (Zone A)</span>
+                                    </div>
+                                    <span class="aisle-runway-badge">RUNWAY 2.8m CLEARANCE • DUAL LANE</span>
+                                </div>
+
+                                <div class="rack-bays-grid">
+                                    <!-- A1 -->
+                                    <div class="rack-bay-card high-demand active-selected-bay" data-bay="A1">
+                                        <div class="bay-badge-pill pill-pick">ACTIVE PICK</div>
+                                        <div class="rack-top">
+                                            <span class="rack-code">A1</span>
+                                            <span class="rack-occ hot">92% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Ultralight Sh...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-1001</span>
+                                            <span class="rack-velocity">1,248 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-hot" style="width: 92%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- A2 -->
+                                    <div class="rack-bay-card standard" data-bay="A2">
+                                        <div class="rack-top">
+                                            <span class="rack-code">A2</span>
+                                            <span class="rack-occ">68% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Electronics ...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-2041</span>
+                                            <span class="rack-velocity">540 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-normal" style="width: 68%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- A3 -->
+                                    <div class="rack-bay-card high-demand" data-bay="A3">
+                                        <div class="bay-badge-pill pill-hot">HIGH VEL</div>
+                                        <div class="rack-top">
+                                            <span class="rack-code">A3</span>
+                                            <span class="rack-occ hot">84% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Cotton Cre...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-0842</span>
+                                            <span class="rack-velocity">982 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-hot" style="width: 84%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- A4 -->
+                                    <div class="rack-bay-card near-capacity" data-bay="A4">
+                                        <div class="bay-badge-pill pill-amber">CAPACITY 96%</div>
+                                        <div class="rack-top">
+                                            <span class="rack-code">A4</span>
+                                            <span class="rack-occ amber-text">96% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Winter Park...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-3129</span>
+                                            <span class="rack-velocity">96 / 100 U</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-amber" style="width: 96%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CROSS-AISLE ARTERIAL ROUTE -->
+                            <div class="cross-aisle-corridor">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                <span>CROSS-AISLE MAIN ARTERIAL ROUTE • 3.2M HIGH-CLEARANCE AUTOMATED AGV CORRIDOR</span>
+                            </div>
+
+                            <!-- AISLE B (ZONE B) -->
+                            <div class="floor-aisle-container" data-zone="b" id="aisleBContainer">
+                                <div class="floor-aisle-heading">
+                                    <div class="aisle-title-wrap">
+                                        <span class="aisle-indicator-dot dot-crimson"></span>
+                                        <span class="aisle-code-bold">AISLE B</span>
+                                        <span class="aisle-desc-text">— Mid-Density Picking & Hardware Tech (Zone B)</span>
+                                    </div>
+                                    <span class="aisle-runway-badge">RUNWAY 2.6m CLEARANCE</span>
+                                </div>
+
+                                <div class="rack-bays-grid">
+                                    <!-- B1 -->
+                                    <div class="rack-bay-card standard" data-bay="B1">
+                                        <div class="rack-top">
+                                            <span class="rack-code">B1</span>
+                                            <span class="rack-occ">78% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Tactical Hea...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-7718</span>
+                                            <span class="rack-velocity">420 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-normal" style="width: 78%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- B2 -->
+                                    <div class="rack-bay-card high-demand" data-bay="B2">
+                                        <div class="bay-badge-pill pill-hot">HIGH VEL</div>
+                                        <div class="rack-top">
+                                            <span class="rack-code">B2</span>
+                                            <span class="rack-occ hot">86% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Smart Watc...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-6602</span>
+                                            <span class="rack-velocity">890 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-hot" style="width: 86%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- B3 -->
+                                    <div class="rack-bay-card standard" data-bay="B3">
+                                        <div class="rack-top">
+                                            <span class="rack-code">B3</span>
+                                            <span class="rack-occ">60% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Field Lanterns</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-5521</span>
+                                            <span class="rack-velocity">280 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-normal" style="width: 60%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- B4 -->
+                                    <div class="rack-bay-card standard" data-bay="B4">
+                                        <div class="rack-top">
+                                            <span class="rack-code">B4</span>
+                                            <span class="rack-occ">74% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Stainless Fla...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-9908</span>
+                                            <span class="rack-velocity">310 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-normal" style="width: 74%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AISLE C (ZONE C) -->
+                            <div class="floor-aisle-container" data-zone="c" id="aisleCContainer">
+                                <div class="floor-aisle-heading">
+                                    <div class="aisle-title-wrap">
+                                        <span class="aisle-indicator-dot dot-green"></span>
+                                        <span class="aisle-code-bold">AISLE C</span>
+                                        <span class="aisle-desc-text">— Heavy & Bulk High-Bays (Zone C)</span>
+                                    </div>
+                                    <span class="aisle-runway-badge">RUNWAY 3.0m CLEARANCE • HEAVY REACH</span>
+                                </div>
+
+                                <div class="rack-bays-grid">
+                                    <!-- C1 -->
+                                    <div class="rack-bay-card standard" data-bay="C1">
+                                        <div class="rack-top">
+                                            <span class="rack-code">C1</span>
+                                            <span class="rack-occ">42% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Heavy Tarps...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-8820</span>
+                                            <span class="rack-velocity">110 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-normal" style="width: 42%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- C2 -->
+                                    <div class="rack-bay-card standard" data-bay="C2">
+                                        <div class="rack-top">
+                                            <span class="rack-code">C2</span>
+                                            <span class="rack-occ">65% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Hydraulic Ja...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-3940</span>
+                                            <span class="rack-velocity">190 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-normal" style="width: 65%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- C3 -->
+                                    <div class="rack-bay-card high-demand" data-bay="C3">
+                                        <div class="rack-top">
+                                            <span class="rack-code">C3</span>
+                                            <span class="rack-occ hot">89% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title">Thermal Par...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku">SKU-1192</span>
+                                            <span class="rack-velocity">240 p/mo</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill fill-hot" style="width: 89%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- C4 (AVAILABLE) -->
+                                    <div class="rack-bay-card empty" data-bay="C4">
+                                        <div class="bay-badge-pill pill-green">AVAILABLE</div>
+                                        <div class="rack-top">
+                                            <span class="rack-code">C4</span>
+                                            <span class="green-text" style="font-family: var(--font-mono); font-size: 11px;">0% OCC</span>
+                                        </div>
+                                        <div class="rack-product-title green-text">Pallet Stagi...</div>
+                                        <div class="rack-meta-row">
+                                            <span class="rack-sku green-text">Capacity</span>
+                                            <span class="green-text" style="font-weight: 700;">350 Units Open</span>
+                                        </div>
+                                        <div class="rack-progress-track">
+                                            <div class="rack-progress-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AUTOMATED PACKING HUB & FINAL DISPATCH -->
+                            <div class="packing-hub-station">
+                                <div class="hub-station-left">
+                                    <div class="hub-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path><circle cx="8" cy="6" r="2" fill="currentColor"></circle><circle cx="16" cy="12" r="2" fill="currentColor"></circle></svg>
+                                    </div>
+                                    <div class="hub-station-info">
+                                        <div class="hub-title-row">
+                                            <h3>AUTOMATED PACKING HUB & FINAL DISPATCH</h3>
+                                            <span class="online-tag">ONLINE</span>
+                                        </div>
+                                        <p>Infeed Conveyors 01-03 • Multi-Beam Optical Scanner • High-speed Sorting Rollers</p>
+                                    </div>
+                                </div>
+                                <div class="outfeed-vector-box">
+                                    <span class="vector-tag-sub">OUTFEED TRANSIT VECTOR</span>
+                                    <strong class="vector-val">18m Direct Vector to A1</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STAGE LEGEND FOOTER -->
+                        <div class="map-legend-footer">
+                            <div class="legend-list">
+                                <div class="legend-unit"><span class="leg-dot dot-crimson"></span> High Demand Pick</div>
+                                <div class="legend-unit"><span class="leg-dot dot-occupied"></span> Standard Occupied</div>
+                                <div class="legend-unit"><span class="leg-dot dot-green"></span> Available / Open Bay</div>
+                                <div class="legend-unit"><span class="leg-dot dot-amber"></span> Near Capacity (&gt;95%)</div>
+                                <div class="legend-unit">↓ Entry Dock Infeed</div>
+                                <div class="legend-unit">▤ Packing Station Hub</div>
+                            </div>
+                            <div class="cad-timestamp">LAST CAD REFRESH: 14:02:18 UTC</div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT-SIDE SHELF BAY INSPECTOR PANEL -->
+                    <div class="card shelf-bay-inspector" id="shelfInspectorPanel">
+                        <div class="inspector-zone-badge-row">
+                            <span class="zone-badge-text" id="inspectZoneTitle">ZONE A — FAST DISPATCH</span>
+                            <span class="online-rack-pill"><span class="green-dot"></span> ONLINE RACK</span>
+                        </div>
+
+                        <div class="inspector-hero-row">
+                            <div class="shelf-name-wrap">
+                                <span class="shelf-prefix">SHELF BAY</span>
+                                <h2 class="shelf-code-huge" id="inspectBayCode">A1</h2>
+                            </div>
+                            <div class="shelf-status-pill" id="inspectStatusPill">
+                                <span>Active High Demand</span>
+                            </div>
+                        </div>
+
+                        <!-- PHYSICAL RACK SPECIFICATIONS -->
+                        <div class="spec-section-card">
+                            <span class="spec-section-title">PHYSICAL RACK SPECIFICATIONS</span>
+                            <div class="spec-2col-grid">
+                                <div class="spec-tile">
+                                    <span class="spec-k">Grid Position</span>
+                                    <strong class="spec-v" id="inspectGridPos">Row A / Bay 1</strong>
+                                </div>
+                                <div class="spec-tile">
+                                    <span class="spec-k">Structure</span>
+                                    <strong class="spec-v" id="inspectStructure">4-Tier Steel Rack</strong>
+                                </div>
+                            </div>
+
+                            <div class="spec-full-tile">
+                                <span class="spec-k">Dimensions & Footprint</span>
+                                <strong class="spec-v" id="inspectDimensions">2.4m W × 1.8m D × 4.2m H</strong>
+                            </div>
+
+                            <div class="spec-transit-tile">
+                                <span class="spec-k">Distance to Primary Packing</span>
+                                <strong class="spec-v crimson-text" id="inspectPackingDist">18 meters (Fastest infeed loop)</strong>
+                            </div>
+                        </div>
+
+                        <!-- VOLUMETRIC UTILIZATION -->
+                        <div class="utilization-section-card">
+                            <div class="util-header">
+                                <span class="spec-section-title">VOLUMETRIC UTILIZATION</span>
+                                <span class="util-pct-bold crimson-text" id="inspectUtilPct">92%</span>
+                            </div>
+                            <div class="util-bar-track">
+                                <div class="util-bar-fill fill-hot" id="inspectUtilBar" style="width: 92%;"></div>
+                            </div>
+                            <div class="util-load-meta">
+                                <span>Current Load: <strong id="inspectLoadVal">92 units</strong></span>
+                                <span>Max Bay Cap: <strong id="inspectCapVal">100 units</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- PRIMARY STORED SKU -->
+                        <div class="stored-sku-section">
+                            <span class="spec-section-title">PRIMARY STAGED SKU</span>
+                            <div class="stored-sku-hero">
+                                <div class="sku-thumb">
+                                    <img id="inspectSkuImg" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=160&auto=format&fit=crop&q=80" alt="SKU Thumb">
+                                </div>
+                                <div class="sku-details">
+                                    <div class="sku-badge-line">
+                                        <span class="sku-tag-code" id="inspectSkuCode">SKU-1001</span>
+                                        <span class="tier-tag">TIER-1</span>
+                                    </div>
+                                    <h4 class="sku-name-text" id="inspectSkuName">Ultralight Running Shoes</h4>
+                                    <span class="sku-cat-text" id="inspectSkuCat">Category: Footwear // Athletic</span>
+                                </div>
+                            </div>
+
+                            <div class="sku-velocity-row">
+                                <div class="velocity-box">
+                                    <span class="vel-k">Monthly Velocity:</span>
+                                    <strong class="vel-v" id="inspectVelocityVal">1,248 picks/mo</strong>
+                                    <span class="vel-sub">Top 1% Warehouse Rate</span>
+                                </div>
+                                <div class="velocity-box">
+                                    <span class="vel-k">Unit Weight:</span>
+                                    <strong class="vel-v" id="inspectWeightVal">1.2 kg</strong>
+                                    <span class="vel-sub" id="inspectTotalWeightVal">Total Bay: 110.4 kg</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OPTIMIZER RATIONALE BOX -->
+                        <div class="optimizer-rationale-card">
+                            <div class="rationale-icon">✦</div>
+                            <p class="rationale-text" id="inspectRationale">
+                                <strong>Optimizer Rationale:</strong> Bay A1 is positioned 18m from the primary packing conveyor, minimizing picker transit by <strong>38 meters</strong> per cycle compared to Zone C. Optimal positioning for high wave velocity items.
+                            </p>
+                        </div>
+
+                        <!-- ACTIONS GROUP -->
+                        <div class="inspector-actions-wrap">
+                            <button class="btn btn-primary btn-full" id="inspectEditShelfBtn">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                                <span>Edit Shelf Allocation</span>
+                            </button>
+                            <div class="secondary-actions-row">
+                                <button class="btn-sub-action" id="inspectViewSkusBtn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                                    <span>View All SKUs</span>
+                                </button>
+                                <button class="btn-sub-action" id="inspectReassignBtn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                                    <span>Reassign Bay</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ADD SHELF MODAL -->
+    <div id="addShelfModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <div class="modal-icon-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Add New Warehouse Shelf Bay</h3>
+                        <p class="modal-subtitle">Register physical rack bay into 2D grid matrix.</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" id="closeAddShelfModalBtn">✕</button>
+            </div>
+
+            <form id="addShelfForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newShelfCode">Shelf Code *</label>
+                        <input type="text" id="newShelfCode" placeholder="e.g. A5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newShelfZone">Zone Allocation *</label>
+                        <select id="newShelfZone" required>
+                            <option value="Zone A">Zone A (Fast Dispatch Runway)</option>
+                            <option value="Zone B">Zone B (Mid-Density Picking)</option>
+                            <option value="Zone C">Zone C (Heavy & Bulk High-Bay)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newShelfCapacity">Bay Capacity (Units) *</label>
+                        <input type="number" id="newShelfCapacity" value="100" min="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newShelfLoad">Initial Load (Units) *</label>
+                        <input type="number" id="newShelfLoad" value="75" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newShelfProduct">Assigned Product Name</label>
+                        <input type="text" id="newShelfProduct" placeholder="e.g. Tactical Cargo Straps">
+                    </div>
+                    <div class="form-group">
+                        <label for="newShelfStatus">Initial Status</label>
+                        <select id="newShelfStatus">
+                            <option value="active">Active High Demand</option>
+                            <option value="standard" selected>Standard Occupied</option>
+                            <option value="available">Available / Empty</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelAddShelfBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Shelf Bay</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW ALL SKUS MODAL -->
+    <div id="viewSkusModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <div class="modal-icon-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="viewSkusModalTitle">Stored SKUs on Bay A1</h3>
+                        <p class="modal-subtitle">Full inventory allocation breakdown for this bay.</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" id="closeViewSkusModalBtn">✕</button>
+            </div>
+
+            <div id="viewSkusListContent" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="doneViewSkusBtn">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REASSIGN BAY MODAL -->
+    <div id="reassignBayModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <div class="modal-icon-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="reassignModalTitle">Reassign Bay A1</h3>
+                        <p class="modal-subtitle">Select target shelf destination to transfer stock payload.</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" id="closeReassignModalBtn">✕</button>
+            </div>
+
+            <form id="reassignBayForm" class="modal-form">
+                <div class="form-group">
+                    <label for="targetBaySelect">Target Shelf Destination *</label>
+                    <select id="targetBaySelect">
+                        <option value="A2">Bay A2 (Zone A • Runway 2)</option>
+                        <option value="A3">Bay A3 (Zone A • Runway 3)</option>
+                        <option value="B1">Bay B1 (Zone B • Picking Line)</option>
+                        <option value="B3">Bay B3 (Zone B • Mid-Density)</option>
+                        <option value="C4">Bay C4 (Zone C • Available Open Bay)</option>
+                    </select>
+                </div>
+
+                <div class="optimizer-note-box">
+                    <strong>Transit Impact:</strong> Transferring payload to Zone C increases round-trip operator cycle by ~32 meters. Zone A/B recommended.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelReassignBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Confirm Transfer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toastNotification" class="toast-notification">
+        <div class="toast-icon">⚡</div>
+        <div class="toast-content">
+            <h4 id="toastTitle">Warehouse Layout Updated</h4>
+            <p id="toastMessage">Shelf bay matrix re-indexed successfully.</p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>

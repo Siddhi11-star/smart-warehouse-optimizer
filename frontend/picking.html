@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picking Route Optimizer - Smart Warehouse Optimization Suite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-layout">
+        <!-- LEFT SIDEBAR -->
+                <aside class="sidebar">
+            <a href="index.html" class="sidebar-brand">
+                <div class="brand-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">Smart Warehouse</span>
+                    <span class="brand-subtitle">OPTIMIZATION SUITE</span>
+                </div>
+            </a>
+
+            <div class="sidebar-section-label">OPERATIONS CORE</div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item" data-nav="dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item" data-nav="products">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                    <span>Products</span>
+                </a>
+                <a href="layout.html" class="nav-item" data-nav="layout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    <span>Warehouse Layout</span>
+                </a>
+                <a href="shelf-optimizer.html" class="nav-item" data-nav="shelf-optimizer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        <circle cx="8" cy="6" r="2" fill="currentColor"></circle>
+                        <circle cx="16" cy="12" r="2" fill="currentColor"></circle>
+                        <circle cx="10" cy="18" r="2" fill="currentColor"></circle>
+                    </svg>
+                    <span>Shelf Optimizer</span>
+                </a>
+                <a href="orders.html" class="nav-item" data-nav="orders">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Orders</span>
+                </a>
+                <a href="picking.html" class="nav-item active" data-nav="picking">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <span>Picking Optimizer</span>
+                </a>
+                <a href="analytics.html" class="nav-item" data-nav="analytics">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-item" data-nav="settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-status-card">
+                <div class="status-indicator">
+                    <span class="status-pulse-dot"></span>
+                    <span class="status-label">SYSTEM ONLINE</span>
+                </div>
+                <div class="status-subtext">TSP Engine v2.4 Active</div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEWPORT -->
+        <div class="main-viewport">
+            <!-- TOP BAR -->
+            <header class="top-header">
+                <div class="search-container">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="globalSearchInput" placeholder="Search SKU, product, shelf coordinate..." class="search-input">
+                    <kbd class="shortcut-badge">⌘K</kbd>
+                </div>
+
+                <div class="header-actions">
+                    <div class="telemetry-pill">
+                        <span class="telemetry-dot"></span>
+                        <span>LIVE TELEMETRY</span>
+                    </div>
+
+                    <button class="icon-button notification-btn" title="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="badge-count">3</span>
+                    </button>
+
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" alt="Sarah Jenkins">
+                        </div>
+                        <div class="user-meta">
+                            <span class="user-name">Sarah Jenkins</span>
+                            <span class="user-role">Warehouse Director</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="content-scroll">
+                <!-- HERO TITLE & ACTION ROW -->
+                <div class="page-title-row">
+                    <div class="title-meta-group">
+                        <div class="title-tags">
+                            <h1 class="page-title" style="margin-right: 0.5rem;">Picking Route Optimizer</h1>
+                            <span class="pill-badge pill-green-sm" id="routeEngineBadge">ROUTE ENGINE READY</span>
+                        </div>
+                        <p class="page-header-desc">Calculate deterministic, aisle-constrained shortest paths for warehouse orders leveraging rack bay vectors and graph heuristics.</p>
+                    </div>
+                    <div class="page-action-group">
+                        <button class="btn btn-outline" id="resetRouteBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            <span>Reset Route</span>
+                        </button>
+                        <button class="btn btn-primary" id="optimizePickingBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            <span>⚡ Optimize Picking Route</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TARGET PICK WAVE MANIFEST SELECTOR BAR -->
+                <div class="manifest-selector-bar">
+                    <div class="selector-left-wrap">
+                        <div class="selector-label-group">
+                            <span class="sel-label">TARGET PICK WAVE MANIFEST</span>
+                            <div class="order-pills-list">
+                                <button class="order-select-pill active" data-order="ORD-10241">
+                                    <span>ORD-10241</span>
+                                    <span class="pill-mini-urgent">URGENT</span>
+                                </button>
+                                <button class="order-select-pill" data-order="ORD-10240">
+                                    <span>ORD-10240</span>
+                                    <span class="pill-mini-muted">5 SKUs</span>
+                                </button>
+                                <button class="order-select-pill" data-order="ORD-10239">
+                                    <span>ORD-10239</span>
+                                    <span class="pill-mini-muted">2 SKUs</span>
+                                </button>
+                                <button class="order-select-pill" data-order="ORD-10238">
+                                    <span>ORD-10238</span>
+                                    <span class="pill-mini-muted">7 SKUs</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="selector-meta-info">
+                            <div class="s-meta-item">
+                                <span class="s-k">STATUS</span>
+                                <strong class="s-v green-text" id="manifestStatus"><span class="dot-green"></span> Picking Active</strong>
+                            </div>
+                            <div class="s-meta-item">
+                                <span class="s-k">PRIORITY</span>
+                                <strong class="s-v crimson-text" id="manifestPriority">URGENT BATCH</strong>
+                            </div>
+                            <div class="s-meta-item">
+                                <span class="s-k">PAYLOAD</span>
+                                <strong class="s-v" id="manifestPayload">3 SKUs / 4 Units</strong>
+                            </div>
+                            <div class="s-meta-item">
+                                <span class="s-k">RUNWAY ZONE</span>
+                                <strong class="s-v" id="manifestZone">Sector 01 Fast Deck</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="algorithm-goal-switch">
+                        <span class="goal-label">ALGORITHM GOAL</span>
+                        <div class="goal-toggle-group">
+                            <button class="goal-toggle-btn active" data-goal="tsp">Efficient Pick (TSP)</button>
+                            <button class="goal-toggle-btn" data-goal="fifo">Standard FIFO</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2-COLUMN MAIN WORKSPACE: 2D FLOOR ROUTING GRAPH + ROUTE TELEMETRY/SEQUENCE -->
+                <div class="picking-main-grid">
+                    <!-- LEFT COLUMN: 2D ROUTING GRAPH & EFFICIENCY BENCHMARK -->
+                    <div class="picking-left-col">
+                        <!-- 2D FLOOR ROUTING GRAPH CARD -->
+                        <div class="card routing-graph-card" id="routingGraphCard">
+                            <div class="graph-top-header">
+                                <div class="graph-title-left">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E83A4B" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                    <span class="graph-title-bold">2D Floor Routing Graph • Sector 01</span>
+                                    <span class="graph-dims-muted">Dimensions: 60.0m × 45.0m • Grid Scale: 1 cell = 2.5m</span>
+                                </div>
+                                <div class="graph-badge-right">
+                                    <span class="tsp-path-badge" id="graphTspBadge">● TSP PATH: 142M ACTIVE</span>
+                                </div>
+                            </div>
+
+                            <!-- 2D MAP STAGE WITH GRAPH OVERLAY -->
+                            <div class="floor-graph-viewport" id="graphViewport">
+                                <!-- SVG Path Overlay Canvas -->
+                                <svg class="routing-svg-layer" id="routingSvgLayer" viewBox="0 0 760 480">
+                                    <!-- Dynamic SVG Route Path Rendered by JS -->
+                                </svg>
+
+                                <!-- GATE D-01 ENTRY DOCK STATION -->
+                                <div class="graph-station-node entry-node" id="entryDockNode">
+                                    <div class="station-inner">
+                                        <div class="station-icon">↓</div>
+                                        <div class="station-info">
+                                            <strong>GATE D-01 ENTRY DOCK</strong>
+                                            <small>Infeed Staging & Cart Start</small>
+                                        </div>
+                                    </div>
+                                    <div class="station-badge">START (0m)</div>
+                                </div>
+
+                                <!-- AISLE A (FAST RUNWAY) -->
+                                <div class="graph-aisle-row aisle-a-row" id="graphAisleA">
+                                    <div class="aisle-row-tag">AISLE A<br><small>FAST RUNWAY</small></div>
+                                    <div class="graph-shelves-grid">
+                                        <!-- Bay A1 (Waypoint 1) -->
+                                        <div class="graph-bay-node active-target-waypoint" data-bay="A1" id="bayNodeA1">
+                                            <div class="waypoint-flag-pill pill-pick" id="badgeA1">STOP 1</div>
+                                            <div class="bay-code-line"><strong>BAY A1</strong> <span class="bay-occ">92%</span></div>
+                                            <div class="bay-sku-text">Shoes [SKU-1001]</div>
+                                            <div class="bay-sub-status green-text">Fast Picking Slot</div>
+                                        </div>
+
+                                        <!-- Bay A2 -->
+                                        <div class="graph-bay-node" data-bay="A2" id="bayNodeA2">
+                                            <div class="bay-code-line"><strong>BAY A2</strong> <span class="bay-occ">68%</span></div>
+                                            <div class="bay-sku-text">Apparel High-Turn</div>
+                                            <div class="bay-sub-status">Standard Buffer</div>
+                                        </div>
+
+                                        <!-- Bay A3 (Waypoint 3) -->
+                                        <div class="graph-bay-node active-target-waypoint" data-bay="A3" id="bayNodeA3">
+                                            <div class="waypoint-flag-pill pill-pick" id="badgeA3">STOP 3</div>
+                                            <div class="bay-code-line"><strong>BAY A3</strong> <span class="bay-occ">84%</span></div>
+                                            <div class="bay-sku-text">Crew Shirts (Pack 3)</div>
+                                            <div class="bay-sub-status">Bay 3rd Waypoint</div>
+                                        </div>
+
+                                        <!-- Bay A4 -->
+                                        <div class="graph-bay-node" data-bay="A4" id="bayNodeA4">
+                                            <div class="bay-code-line"><strong>BAY A4</strong> <span class="bay-occ">96%</span></div>
+                                            <div class="bay-sku-text">Hydration Gear</div>
+                                            <div class="bay-sub-status amber-text">High Cap</div>
+                                        </div>
+
+                                        <!-- Bay A5 -->
+                                        <div class="graph-bay-node" data-bay="A5" id="bayNodeA5">
+                                            <div class="bay-code-line"><strong>BAY A5</strong> <span class="bay-occ">74%</span></div>
+                                            <div class="bay-sku-text">Equipment Staging</div>
+                                            <div class="bay-sub-status">Normal</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CROSS-CORRIDOR AGV RUNWAY -->
+                                <div class="cross-corridor-lane">
+                                    <span>◄ CROSS-AISLE AGV MAIN ARTERIAL CORRIDOR • 3.2M CLEARANCE ►</span>
+                                </div>
+
+                                <!-- AISLE B (MID-DENSITY) -->
+                                <div class="graph-aisle-row aisle-b-row" id="graphAisleB">
+                                    <div class="aisle-row-tag">AISLE B<br><small>MID-DENSITY</small></div>
+                                    <div class="graph-shelves-grid">
+                                        <!-- Bay B1 -->
+                                        <div class="graph-bay-node" data-bay="B1" id="bayNodeB1">
+                                            <div class="bay-code-line"><strong>BAY B1</strong> <span class="bay-occ">78%</span></div>
+                                            <div class="bay-sku-text">Audio Peripherals</div>
+                                            <div class="bay-sub-status">Mid-Zone</div>
+                                        </div>
+
+                                        <!-- Bay B2 (Waypoint 2) -->
+                                        <div class="graph-bay-node active-target-waypoint current-picker-bay" data-bay="B2" id="bayNodeB2">
+                                            <div class="waypoint-flag-pill pill-hot" id="badgeB2">STOP 2 (NOW)</div>
+                                            <div class="bay-code-line"><strong>BAY B2</strong> <span class="bay-occ hot">86%</span></div>
+                                            <div class="bay-sku-text">Watch X9 [1003]</div>
+                                            <div class="bay-sub-status crimson-text">Current Pick Focus</div>
+                                        </div>
+
+                                        <!-- Bay B3 -->
+                                        <div class="graph-bay-node" data-bay="B3" id="bayNodeB3">
+                                            <div class="bay-code-line"><strong>BAY B3</strong> <span class="bay-occ">60%</span></div>
+                                            <div class="bay-sku-text">Primary Hardware</div>
+                                            <div class="bay-sub-status">Standard</div>
+                                        </div>
+
+                                        <!-- Bay B4 -->
+                                        <div class="graph-bay-node" data-bay="B4" id="bayNodeB4">
+                                            <div class="bay-code-line"><strong>BAY B4</strong> <span class="bay-occ">74%</span></div>
+                                            <div class="bay-sku-text">Smart Wearables</div>
+                                            <div class="bay-sub-status">Standard</div>
+                                        </div>
+
+                                        <!-- Bay B5 -->
+                                        <div class="graph-bay-node" data-bay="B5" id="bayNodeB5">
+                                            <div class="bay-code-line"><strong>BAY B5</strong> <span class="bay-occ">55%</span></div>
+                                            <div class="bay-sku-text">Bulk Staging</div>
+                                            <div class="bay-sub-status">Open Tier</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- AISLE C (BULK & HEAVY) -->
+                                <div class="graph-aisle-row aisle-c-row" id="graphAisleC">
+                                    <div class="aisle-row-tag">AISLE C<br><small>BULK HEAVY</small></div>
+                                    <div class="graph-shelves-grid">
+                                        <!-- Bay C1 -->
+                                        <div class="graph-bay-node" data-bay="C1" id="bayNodeC1">
+                                            <div class="bay-code-line"><strong>BAY C1</strong> <span class="bay-occ">42%</span></div>
+                                            <div class="bay-sku-text">Floor Jacks (14kg)</div>
+                                            <div class="bay-sub-status">Ground Steel</div>
+                                        </div>
+
+                                        <!-- Bay C2 -->
+                                        <div class="graph-bay-node" data-bay="C2" id="bayNodeC2">
+                                            <div class="bay-code-line"><strong>BAY C2</strong> <span class="bay-occ">65%</span></div>
+                                            <div class="bay-sku-text">Winter Parkas Heavy</div>
+                                            <div class="bay-sub-status">Bulky Slot</div>
+                                        </div>
+
+                                        <!-- Bay C3 -->
+                                        <div class="graph-bay-node" data-bay="C3" id="bayNodeC3">
+                                            <div class="bay-code-line"><strong>BAY C3</strong> <span class="bay-occ">89%</span></div>
+                                            <div class="bay-sku-text">Thermal Insulation</div>
+                                            <div class="bay-sub-status">Pallet Tier</div>
+                                        </div>
+
+                                        <!-- Bay C4 -->
+                                        <div class="graph-bay-node empty-bay" data-bay="C4" id="bayNodeC4">
+                                            <div class="bay-code-line"><strong>BAY C4</strong> <span class="green-text">0%</span></div>
+                                            <div class="bay-sku-text green-text">Open Staging</div>
+                                            <div class="bay-sub-status green-text">Available</div>
+                                        </div>
+
+                                        <!-- Bay C5 -->
+                                        <div class="graph-bay-node" data-bay="C5" id="bayNodeC5">
+                                            <div class="bay-code-line"><strong>BAY C5</strong> <span class="bay-occ">50%</span></div>
+                                            <div class="bay-sku-text">Heavy Duty Tarps</div>
+                                            <div class="bay-sub-status">Forklift Bay</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- OUTBOUND PACKING & FINAL DISPATCH HUB -->
+                                <div class="graph-station-node packing-node" id="packingHubNode">
+                                    <div class="station-inner">
+                                        <div class="station-icon">▤</div>
+                                        <div class="station-info">
+                                            <strong>OUTBOUND PACKING & DISPATCH HANDOFF</strong>
+                                            <small>Weigh Station • Optical Conveyor 01-03</small>
+                                        </div>
+                                    </div>
+                                    <div class="station-badge finish-badge">FINISH (142m)</div>
+                                </div>
+                            </div>
+
+                            <!-- GRAPH LEGEND FOOTER -->
+                            <div class="graph-legend-footer">
+                                <div class="g-leg-item"><span class="dot-crimson"></span> Active Waypoint Stop</div>
+                                <div class="g-leg-item"><span class="dot-green"></span> Completed Stop</div>
+                                <div class="g-leg-item"><span class="dot-coral-line"></span> Aisle Vector (No Rack Cut)</div>
+                                <div class="g-leg-item"><span class="dot-occupied"></span> Shelving Matrix</div>
+                                <div class="g-leg-right">Manhattan Grid Metric: L1 Metric Active</div>
+                            </div>
+                        </div>
+
+                        <!-- ROUTE EFFICIENCY BENCHMARK -->
+                        <div class="card benchmark-card">
+                            <div class="benchmark-header">
+                                <div class="bench-title-wrap">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E83A4B" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                                    <h3 class="bench-title">Route Efficiency Benchmark</h3>
+                                </div>
+                                <span class="bench-tag">COMPARISON MATRIX</span>
+                            </div>
+
+                            <div class="benchmark-comparison-grid">
+                                <!-- Standard FIFO Route -->
+                                <div class="bench-pane standard-pane">
+                                    <div class="bench-pane-head">
+                                        <span class="pane-badge-neutral">STANDARD</span>
+                                        <h4 class="pane-h4">Legacy FIFO Route</h4>
+                                        <div class="bench-big-dist">188 <small>m</small></div>
+                                    </div>
+                                    <div class="bench-meta-lines">
+                                        <div class="b-line"><span class="b-k">Sequence:</span> <strong class="b-v">DOCK ➔ A1 ➔ A3 ➔ B2 ➔ PACK</strong></div>
+                                        <div class="b-line"><span class="b-k">Total Travel Time:</span> <strong class="b-v">4m 30s</strong></div>
+                                        <div class="b-line"><span class="b-k">Aisle Backtracks:</span> <strong class="b-v crimson-text">2 Redundant Turns</strong></div>
+                                    </div>
+                                </div>
+
+                                <!-- Optimized TSP Pick Sequence -->
+                                <div class="bench-pane optimized-pane">
+                                    <div class="bench-pane-head">
+                                        <span class="pane-badge-opt">OPTIMIZED</span>
+                                        <h4 class="pane-h4">TSP Pick Sequence</h4>
+                                        <div class="bench-big-dist green-text" id="benchOptDist">142 <small>m</small></div>
+                                    </div>
+                                    <div class="bench-meta-lines">
+                                        <div class="b-line"><span class="b-k">Sequence:</span> <strong class="b-v green-text" id="benchOptSeq">DOCK ➔ A1 ➔ B2 ➔ A3 ➔ PACK</strong></div>
+                                        <div class="b-line"><span class="b-k">Traverse Improvement:</span> <strong class="b-v green-text" id="benchOptImprove">-46 m (-24.4%)</strong></div>
+                                        <div class="b-line"><span class="b-k">Time Saved:</span> <strong class="b-v green-text" id="benchOptTime">1 min 18 sec saved</strong></div>
+                                    </div>
+                                    <div class="bench-progress-bar">
+                                        <div class="bench-progress-fill fill-green" style="width: 75.6%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ALGORITHMIC PIPELINE • GRAPH TSP ENGINE -->
+                        <div class="card algo-pipeline-card">
+                            <div class="algo-card-head">
+                                <h3 class="algo-title">Algorithmic Pipeline • Graph TSP Engine</h3>
+                                <span class="algo-sub">Manhattan Corridors • Non-Euclidean Walkways</span>
+                            </div>
+
+                            <div class="pipeline-steps-grid">
+                                <div class="p-step-box">
+                                    <span class="p-step-num">STEP 01</span>
+                                    <strong class="p-step-title">Order Manifest</strong>
+                                    <p class="p-step-desc">Parse item SKUs & batch weight</p>
+                                </div>
+                                <div class="p-step-box">
+                                    <span class="p-step-num">STEP 02</span>
+                                    <strong class="p-step-title">Bay Spatial Map</strong>
+                                    <p class="p-step-desc">Assign coordinates (A1, B2, A3)</p>
+                                </div>
+                                <div class="p-step-box">
+                                    <span class="p-step-num">STEP 03</span>
+                                    <strong class="p-step-title">Aisle Graph</strong>
+                                    <p class="p-step-desc">Construct adjacency corridors</p>
+                                </div>
+                                <div class="p-step-box">
+                                    <span class="p-step-num">STEP 04</span>
+                                    <strong class="p-step-title">Cost Matrix</strong>
+                                    <p class="p-step-desc">Calculate pairwise L1 metrics</p>
+                                </div>
+                                <div class="p-step-box">
+                                    <span class="p-step-num">STEP 05</span>
+                                    <strong class="p-step-title">2-Opt Heuristic</strong>
+                                    <p class="p-step-desc">Eliminate intersection crossovers</p>
+                                </div>
+                                <div class="p-step-box p-step-final">
+                                    <span class="p-step-num green-text">FINAL</span>
+                                    <strong class="p-step-title green-text">142m Vector</strong>
+                                    <p class="p-step-desc">Deploy to picker terminal</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: VECTOR TELEMETRY, STAGED SKUS & TURN-BY-TURN SEQUENCE -->
+                    <div class="picking-right-col">
+                        <!-- WAVE VECTOR TELEMETRY -->
+                        <div class="card telemetry-kpi-card">
+                            <div class="telemetry-head">
+                                <span class="t-title">Wave Vector Telemetry</span>
+                                <span class="t-order-code" id="telemOrderCode">ORD-10241</span>
+                            </div>
+
+                            <div class="telemetry-2x2-grid">
+                                <div class="t-metric-tile">
+                                    <span class="t-k">TOTAL STOPS</span>
+                                    <div class="t-v-bold" id="telemTotalStops">3 Waypoints</div>
+                                    <span class="t-sub">Excluding Dock/Pack</span>
+                                </div>
+                                <div class="t-metric-tile">
+                                    <span class="t-k">TOTAL DISTANCE</span>
+                                    <div class="t-v-bold green-text" id="telemTotalDist">142 <small>m</small></div>
+                                    <span class="t-sub green-text" id="telemDistDelta">-24.4% vs Baseline</span>
+                                </div>
+                                <div class="t-metric-tile">
+                                    <span class="t-k">ESTIMATED TIME</span>
+                                    <div class="t-v-bold" id="telemEstTime">3m 12s</div>
+                                    <span class="t-sub">Speed: 1.2 m/s avg</span>
+                                </div>
+                                <div class="t-metric-tile">
+                                    <span class="t-k">AVG LEG HOP</span>
+                                    <div class="t-v-bold" id="telemAvgLeg">35.5 <small>m</small></div>
+                                    <span class="t-sub">Optimized Corridor</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PICKING MANIFEST SKUS -->
+                        <div class="card manifest-skus-card">
+                            <div class="manifest-skus-head">
+                                <div class="m-skus-title-wrap">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                    <span class="m-skus-title">Picking Manifest SKUs</span>
+                                </div>
+                                <span class="verified-count-badge" id="manifestVerifiedBadge">1 of 3 Verified</span>
+                            </div>
+
+                            <div class="manifest-items-list" id="manifestItemsList">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+
+                        <!-- TURN-BY-TURN NAVIGATION CARD -->
+                        <div class="card turn-by-turn-card">
+                            <div class="tbt-head">
+                                <div class="tbt-title-wrap">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E83A4B" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                    <span class="tbt-title">Turn-by-Turn Navigation</span>
+                                </div>
+                                <span class="realtime-vector-tag">Real-time Vector</span>
+                            </div>
+
+                            <div class="turn-sequence-list" id="turnSequenceList">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+
+                        <!-- READY FOR WAVE EXECUTION & ACTION BUTTONS -->
+                        <div class="card wave-execution-card">
+                            <div class="execution-alert-box">
+                                <span class="green-check-icon">✓</span>
+                                <div class="exec-text-wrap">
+                                    <strong class="exec-title">READY FOR WAVE EXECUTION</strong>
+                                    <p class="exec-desc" id="execDescText">Order <strong>ORD-10241</strong> saves <strong>46m</strong> and <strong>1m 18s</strong> over standard sequential traversal.</p>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-full btn-lg" id="startPickingWaveBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <span id="startPickingBtnText">Start Picking Wave</span>
+                            </button>
+
+                            <div class="execution-sub-actions">
+                                <button class="btn btn-outline" id="viewLayoutMapBtn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                                    <span>Layout View</span>
+                                </button>
+                                <button class="btn btn-outline" id="pickBarcodeScanBtn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14"></path></svg>
+                                    <span>Pick Barcode</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-container" id="toastNotification">
+        <div class="toast-icon">✓</div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">2-Opt TSP Converged</div>
+            <div class="toast-message" id="toastMessage">Calculated 142m minimum distance sequence for wave #14.</div>
+        </div>
+    </div>
+
+    <script src="js/picking.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>

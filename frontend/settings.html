@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Smart Warehouse Optimization Suite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <div class="app-layout">
+        <!-- LEFT SIDEBAR -->
+                <aside class="sidebar">
+            <a href="index.html" class="sidebar-brand">
+                <div class="brand-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">Smart Warehouse</span>
+                    <span class="brand-subtitle">OPTIMIZATION SUITE</span>
+                </div>
+            </a>
+
+            <div class="sidebar-section-label">OPERATIONS CORE</div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item" data-nav="dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item" data-nav="products">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                    <span>Products</span>
+                </a>
+                <a href="layout.html" class="nav-item" data-nav="layout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    <span>Warehouse Layout</span>
+                </a>
+                <a href="shelf-optimizer.html" class="nav-item" data-nav="shelf-optimizer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        <circle cx="8" cy="6" r="2" fill="currentColor"></circle>
+                        <circle cx="16" cy="12" r="2" fill="currentColor"></circle>
+                        <circle cx="10" cy="18" r="2" fill="currentColor"></circle>
+                    </svg>
+                    <span>Shelf Optimizer</span>
+                </a>
+                <a href="orders.html" class="nav-item" data-nav="orders">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Orders</span>
+                </a>
+                <a href="picking.html" class="nav-item" data-nav="picking">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <span>Picking Optimizer</span>
+                </a>
+                <a href="analytics.html" class="nav-item" data-nav="analytics">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-item active" data-nav="settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-status-card">
+                <div class="status-indicator">
+                    <span class="status-pulse-dot"></span>
+                    <span class="status-label">SYSTEM ONLINE</span>
+                </div>
+                <div class="status-subtext">TSP Engine v2.4 Active</div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEWPORT -->
+        <div class="main-viewport">
+            <!-- TOP BAR -->
+            <header class="top-header">
+                <div class="search-container">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="globalSearchInput" placeholder="Search preferences, API keys, configurations..." class="search-input">
+                    <kbd class="shortcut-badge">⌘K</kbd>
+                </div>
+
+                <div class="header-actions">
+                    <div class="telemetry-pill">
+                        <span class="telemetry-dot"></span>
+                        <span>LIVE TELEMETRY</span>
+                    </div>
+
+                    <button class="icon-button notification-btn" title="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="badge-count">3</span>
+                    </button>
+
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" alt="Sarah Jenkins">
+                        </div>
+                        <div class="user-meta">
+                            <span class="user-name">Sarah Jenkins</span>
+                            <span class="user-role">Warehouse Director</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="content-scroll">
+                <!-- HERO TITLE & ACTION ROW -->
+                <div class="page-title-row">
+                    <div class="title-meta-group">
+                        <div class="title-tags">
+                            <h1 class="page-title" style="margin-right: 0.5rem;">Settings</h1>
+                            <span class="pill-badge tsp-badge">ADMIN CONSOLE</span>
+                        </div>
+                        <p class="page-header-desc">Manage your warehouse system preferences, appearance, notifications and application configuration.</p>
+                    </div>
+                    <div class="page-action-group">
+                        <button class="btn btn-outline" id="discardSettingsBtn">
+                            <span>Discard</span>
+                        </button>
+                        <button class="btn btn-primary" id="saveAllSettingsBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            <span>Save All Changes</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2-COLUMN SETTINGS LAYOUT (TABS NAV + CONTENT PANELS) -->
+                <div class="settings-layout-grid">
+                    <!-- LEFT SETTINGS NAV PANEL -->
+                    <div class="settings-nav-card">
+                        <div class="settings-nav-header">SYSTEM PREFERENCES</div>
+                        <nav class="settings-tabs-list" id="settingsTabsList">
+                            <button class="settings-tab-btn active" data-target="sectionProfile">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <span>Profile</span>
+                            </button>
+                            <button class="settings-tab-btn" data-target="sectionAppearance">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7 7 0 0 0 7 7c0 2-2 3-2 3s1 1 1 3-2 3-2 3-2 0-2 2v2"></path></svg>
+                                <span>Appearance</span>
+                            </button>
+                            <button class="settings-tab-btn" data-target="sectionChat">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                <span>Chat & Assistant</span>
+                            </button>
+                            <button class="settings-tab-btn" data-target="sectionEvaluation">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                                <span>Evaluation Settings</span>
+                            </button>
+                            <button class="settings-tab-btn" data-target="sectionNotifications">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                                <span>Notifications</span>
+                            </button>
+                            <button class="settings-tab-btn" data-target="sectionApiKeys">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="7.5" r="4.5"></circle><path d="M21 21l-5.2-5.2"></path><path d="M15.5 15.5L14 17l2 2 2-2-1.5-1.5z"></path></svg>
+                                <span>API Keys</span>
+                            </button>
+                            <button class="settings-tab-btn" data-target="sectionPlanUsage">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                                <span>Plan & Usage</span>
+                            </button>
+                            <button class="settings-tab-btn tab-danger" data-target="sectionDangerZone">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                <span>Danger Zone</span>
+                            </button>
+                        </nav>
+
+                        <!-- Nav Mini Status Box 1 -->
+                        <div class="nav-sub-status-box">
+                            <div class="n-head">
+                                <span class="n-title">WMS SESSION</span>
+                                <span class="green-text" style="font-size: 10px; font-weight: 700;">● Online</span>
+                            </div>
+                            <div class="n-sub">Sync Latency: <strong>12ms</strong> Socket (Sector 01)</div>
+                        </div>
+
+                        <!-- Nav Mini Status Box 2 -->
+                        <div class="nav-sub-status-box">
+                            <div class="n-head">
+                                <span class="n-title">ZONE A CAPACITY</span>
+                                <span class="amber-text" style="font-size: 10px; font-weight: 700;">91.0%</span>
+                            </div>
+                            <div class="n-sub">27 / 30 Shelves • 3 Slots Left</div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT SETTINGS CONTENT AREA -->
+                    <div class="settings-content-flow" id="settingsContentFlow">
+                        <!-- SECTION 1: PROFILE -->
+                        <div class="card settings-section-card" id="sectionProfile">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">Profile Information</h3>
+                                    <p class="section-card-desc">Manage your account credentials and warehouse administrator details.</p>
+                                </div>
+                                <span class="pill-badge pill-green-sm"><span class="dot-green"></span> AUTHENTICATED ADMIN</span>
+                            </div>
+
+                            <div class="profile-hero-card">
+                                <div class="profile-avatar-wrap">
+                                    <img id="profileAvatarImg" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&auto=format&fit=crop&q=80" alt="Siddhi Borawake" class="profile-avatar-img">
+                                    <button class="btn btn-outline btn-xs" id="changeAvatarBtn">📷 Change Avatar</button>
+                                </div>
+                                <div class="profile-meta-wrap">
+                                    <div class="profile-name-row">
+                                        <h4 class="profile-name-h4" id="profileNameDisplay">Siddhi Borawake</h4>
+                                        <span class="pill-badge tsp-badge">UID 994-ADMIN-044</span>
+                                    </div>
+                                    <p class="profile-role-sub">Lead Flow Director • Zone A High-Bay Dispatch Overseer</p>
+                                    <span class="active-status-pill green-text"><span class="available-dot"></span> Active Duty Shift</span>
+                                </div>
+                            </div>
+
+                            <form id="profileForm">
+                                <div class="form-2col-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">FULL NAME</label>
+                                        <input type="text" id="profFullName" class="form-input" value="Siddhi Borawake" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">EMAIL ADDRESS</label>
+                                        <input type="email" id="profEmail" class="form-input" value="siddhi@example.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">ROLE & PERMISSIONS</label>
+                                        <div class="input-with-badge">
+                                            <input type="text" id="profRole" class="form-input" value="Warehouse Administrator" readonly>
+                                            <span class="input-verified-tag">✓ Verified</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">DEPARTMENT</label>
+                                        <input type="text" id="profDept" class="form-input" value="Operations">
+                                    </div>
+                                </div>
+
+                                <div class="section-actions-footer">
+                                    <button type="button" class="btn btn-outline" id="cancelProfileBtn">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- SECTION 2: APPEARANCE -->
+                        <div class="card settings-section-card" id="sectionAppearance">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">Appearance & Themes</h3>
+                                    <p class="section-card-desc">Customize how the Smart Warehouse interface displays across your terminals.</p>
+                                </div>
+                            </div>
+
+                            <div class="theme-options-group">
+                                <span class="theme-group-label">TERMINAL DISPLAY MODE</span>
+                                <div class="theme-cards-grid">
+                                    <div class="theme-select-card active" data-theme="dark">
+                                        <div class="theme-preview-box dark-preview">
+                                            <div class="prev-bar"></div>
+                                            <div class="prev-dot"></div>
+                                        </div>
+                                        <div class="theme-card-info">
+                                            <strong>Dark Burgundy</strong>
+                                            <small>Dedicated Dark Matrix</small>
+                                        </div>
+                                        <div class="theme-check-circle">✓</div>
+                                    </div>
+
+                                    <div class="theme-select-card" data-theme="light">
+                                        <div class="theme-preview-box light-preview">
+                                            <div class="prev-bar"></div>
+                                            <div class="prev-dot"></div>
+                                        </div>
+                                        <div class="theme-card-info">
+                                            <strong>Clean Slate</strong>
+                                            <small>High-contrast light</small>
+                                        </div>
+                                        <div class="theme-check-circle">○</div>
+                                    </div>
+
+                                    <div class="theme-select-card" data-theme="system">
+                                        <div class="theme-preview-box system-preview">
+                                            <div class="prev-bar"></div>
+                                            <div class="prev-dot"></div>
+                                        </div>
+                                        <div class="theme-card-info">
+                                            <strong>System Adaptive</strong>
+                                            <small>Follows OS defaults</small>
+                                        </div>
+                                        <div class="theme-check-circle">○</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accent-options-group" style="margin-top: 1.25rem;">
+                                <span class="theme-group-label">VOLUMETRIC TEXT & ACCENT</span>
+                                <div class="accent-chips-list">
+                                    <div class="accent-chip active" data-accent="crimson">
+                                        <span class="accent-color-dot" style="background: var(--color-crimson);"></span>
+                                        <div>
+                                            <strong>Coral Crimson</strong>
+                                            <small>Primary High Contrast</small>
+                                        </div>
+                                    </div>
+                                    <div class="accent-chip" data-accent="wine">
+                                        <span class="accent-color-dot" style="background: #8F1523;"></span>
+                                        <div>
+                                            <strong>Deep Wine</strong>
+                                            <small>Subdued Intensity</small>
+                                        </div>
+                                    </div>
+                                    <div class="accent-chip" data-accent="neutral">
+                                        <span class="accent-color-dot" style="background: #5A3E45;"></span>
+                                        <div>
+                                            <strong>Slate Neutral</strong>
+                                            <small>Monochrome Tech</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-actions-footer">
+                                <button class="btn btn-primary" id="applyAppearanceBtn">Apply Appearance</button>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3: CHAT & ASSISTANT -->
+                        <div class="card settings-section-card" id="sectionChat">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">Chat & Assistant Preferences</h3>
+                                    <p class="section-card-desc">Configure the interactive AI and operational messaging assistant.</p>
+                                </div>
+                            </div>
+
+                            <div class="toggles-list">
+                                <div class="toggle-item-row">
+                                    <div class="toggle-label-wrap">
+                                        <strong class="toggle-title">Enable chat history</strong>
+                                        <p class="toggle-desc">Store previous warehouse simulation session logs for review.</p>
+                                    </div>
+                                    <label class="switch-control">
+                                        <input type="checkbox" id="toggleChatHistory" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="toggle-item-row">
+                                    <div class="toggle-label-wrap">
+                                        <strong class="toggle-title">Auto-scroll messages</strong>
+                                        <p class="toggle-desc">Automatically navigate to new incoming telemetry notifications.</p>
+                                    </div>
+                                    <label class="switch-control">
+                                        <input type="checkbox" id="toggleAutoScroll" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="toggle-item-row">
+                                    <div class="toggle-label-wrap">
+                                        <strong class="toggle-title">Show timestamps</strong>
+                                        <p class="toggle-desc">Display high-precision millisecond telemetry timestamps on every log entry.</p>
+                                    </div>
+                                    <label class="switch-control">
+                                        <input type="checkbox" id="toggleShowTimestamps" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="toggle-item-row">
+                                    <div class="toggle-label-wrap">
+                                        <strong class="toggle-title">Enter to send</strong>
+                                        <p class="toggle-desc">Press Enter to send conversational commands in dispatch assistant terminal.</p>
+                                    </div>
+                                    <label class="switch-control">
+                                        <input type="checkbox" id="toggleEnterToSend" checked>
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="toggle-item-row">
+                                    <div class="toggle-label-wrap">
+                                        <strong class="toggle-title">Compact message layout</strong>
+                                        <p class="toggle-desc">Reduce padding for compact 7-inch wearable mobile terminal scanners.</p>
+                                    </div>
+                                    <label class="switch-control">
+                                        <input type="checkbox" id="toggleCompactLayout">
+                                        <span class="switch-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 4: EVALUATION SETTINGS -->
+                        <div class="card settings-section-card" id="sectionEvaluation">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">Optimization Evaluation Settings</h3>
+                                    <p class="section-card-desc">Fine-tune warehouse heuristic loss scoring metrics and slotting quality thresholds.</p>
+                                </div>
+                            </div>
+
+                            <div class="eval-metrics-group">
+                                <span class="theme-group-label">TARGET VALIDATION METRICS</span>
+                                <div class="eval-chips-grid">
+                                    <label class="eval-check-chip">
+                                        <input type="checkbox" checked class="eval-checkbox">
+                                        <div class="eval-chip-box">
+                                            <strong>Accuracy</strong>
+                                            <small>TSP convergence rate &gt; 98.4%</small>
+                                        </div>
+                                    </label>
+
+                                    <label class="eval-check-chip">
+                                        <input type="checkbox" checked class="eval-checkbox">
+                                        <div class="eval-chip-box">
+                                            <strong>Relevance</strong>
+                                            <small>Demand correlation cluster weight</small>
+                                        </div>
+                                    </label>
+
+                                    <label class="eval-check-chip">
+                                        <input type="checkbox" checked class="eval-checkbox">
+                                        <div class="eval-chip-box">
+                                            <strong>Reasoning</strong>
+                                            <small>Slotting routing explainability</small>
+                                        </div>
+                                    </label>
+
+                                    <label class="eval-check-chip">
+                                        <input type="checkbox" checked class="eval-checkbox">
+                                        <div class="eval-chip-box">
+                                            <strong>Clarity</strong>
+                                            <small>Turn-by-turn readability score</small>
+                                        </div>
+                                    </label>
+
+                                    <label class="eval-check-chip">
+                                        <input type="checkbox" checked class="eval-checkbox">
+                                        <div class="eval-chip-box">
+                                            <strong>Safety</strong>
+                                            <small>Floor load limit weight check</small>
+                                        </div>
+                                    </label>
+
+                                    <label class="eval-check-chip">
+                                        <input type="checkbox" checked class="eval-checkbox">
+                                        <div class="eval-chip-box">
+                                            <strong>Non-Integrity</strong>
+                                            <small>Strict physical collision filter</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="eval-slider-group" style="margin-top: 1.25rem;">
+                                <div class="slider-header-line">
+                                    <span class="theme-group-label">DEFAULT EVALUATION THRESHOLD</span>
+                                    <strong class="slider-val-badge" id="evalSliderVal">85%</strong>
+                                </div>
+                                <input type="range" id="evalThresholdSlider" min="70" max="98" value="85" class="custom-range-slider">
+                                <div class="slider-ticks-row">
+                                    <span>Fast Heuristic (70%)</span>
+                                    <span>Balanced Production (85%)</span>
+                                    <span>Exhaustive Search (98%)</span>
+                                </div>
+                            </div>
+
+                            <div class="eval-mode-group" style="margin-top: 1.25rem;">
+                                <span class="theme-group-label">EVALUATION MODE</span>
+                                <div class="eval-mode-radios">
+                                    <label class="mode-radio-tile">
+                                        <input type="radio" name="evalMode" value="standard">
+                                        <div class="mode-content">
+                                            <strong>Standard (Fast Heuristic)</strong>
+                                            <p>150ms cycle for instant manifest updates</p>
+                                        </div>
+                                    </label>
+
+                                    <label class="mode-radio-tile active">
+                                        <input type="radio" name="evalMode" value="detailed" checked>
+                                        <div class="mode-content">
+                                            <strong class="green-text">Detailed (Iterative 2-Opt & Simulated Annealing)</strong>
+                                            <p>Global batch optimization with cross-docking correlation</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 5: NOTIFICATIONS -->
+                        <div class="card settings-section-card" id="sectionNotifications">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">Notification Triggers & Channels</h3>
+                                    <p class="section-card-desc">Select which warehouse events trigger real-time alerts for your operations console.</p>
+                                </div>
+                            </div>
+
+                            <div class="notif-options-grid">
+                                <label class="notif-tile">
+                                    <input type="checkbox" checked class="notif-check">
+                                    <div class="notif-tile-text">
+                                        <strong>Order completion alerts</strong>
+                                        <small>Dispatch notifications per picked wave</small>
+                                    </div>
+                                </label>
+
+                                <label class="notif-tile">
+                                    <input type="checkbox" checked class="notif-check">
+                                    <div class="notif-tile-text">
+                                        <strong>Low-stock alerts (FOL threshold)</strong>
+                                        <small>Automated SKU reorder trigger warning</small>
+                                    </div>
+                                </label>
+
+                                <label class="notif-tile highlight-warning">
+                                    <input type="checkbox" checked class="notif-check">
+                                    <div class="notif-tile-text">
+                                        <strong class="amber-text">Shelf capacity warnings (&gt;90% full)</strong>
+                                        <small>Real-time congestion prevention</small>
+                                    </div>
+                                </label>
+
+                                <label class="notif-tile">
+                                    <input type="checkbox" checked class="notif-check">
+                                    <div class="notif-tile-text">
+                                        <strong>Picking route completion</strong>
+                                        <small>Operator wave termination confirmation</small>
+                                    </div>
+                                </label>
+
+                                <label class="notif-tile">
+                                    <input type="checkbox" checked class="notif-check">
+                                    <div class="notif-tile-text">
+                                        <strong>Optimization Job Finished</strong>
+                                        <small>Slotting simulation completion reports</small>
+                                    </div>
+                                </label>
+
+                                <label class="notif-tile">
+                                    <input type="checkbox" checked class="notif-check">
+                                    <div class="notif-tile-text">
+                                        <strong>System health & latency alerts</strong>
+                                        <small>RF terminal network packet degradation</small>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="channels-section" style="margin-top: 1.25rem;">
+                                <span class="theme-group-label">BROADCAST DELIVERY CHANNELS</span>
+                                <div class="channels-list">
+                                    <label class="channel-check-item">
+                                        <input type="checkbox" checked id="chanInApp">
+                                        <span>In-app telemetry toasts</span>
+                                    </label>
+                                    <label class="channel-check-item">
+                                        <input type="checkbox" checked id="chanEmail">
+                                        <span>Email summary reports (Agreed priority waves)</span>
+                                    </label>
+                                    <label class="channel-check-item">
+                                        <input type="checkbox" id="chanSms">
+                                        <span>SMS critical dispatch pager</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="section-actions-footer">
+                                <button class="btn btn-primary" id="saveNotifBtn">Save Notification Preferences</button>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 6: API KEYS -->
+                        <div class="card settings-section-card" id="sectionApiKeys">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">API Keys & Integrations</h3>
+                                    <p class="section-card-desc">Manage external service credentials used for warehouse socket data and telemetry endpoints.</p>
+                                </div>
+                                <span class="pill-badge tsp-badge" id="apiKeysCountBadge">2 / 4 Active</span>
+                            </div>
+
+                            <div class="api-keys-list" id="apiKeysList">
+                                <!-- Key 1: Warehouse API -->
+                                <div class="api-key-item" data-keyid="key1">
+                                    <div class="key-head">
+                                        <div class="key-name-wrap">
+                                            <strong>Warehouse Data API</strong>
+                                            <span class="pill-badge pill-green-sm">ACTIVE PRODUCTION</span>
+                                        </div>
+                                        <span class="key-created-tag">Created 42 days ago</span>
+                                    </div>
+                                    <div class="key-input-row">
+                                        <div class="key-value-box">
+                                            <span class="key-val-display" id="keyVal1">wh_live_••••••••••••••••34f1</span>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm btn-reveal" data-target="1">Reveal</button>
+                                        <button class="btn btn-outline btn-sm btn-copy" data-target="1">Copy</button>
+                                        <button class="btn btn-outline btn-sm btn-regen" data-target="1">Regenerate</button>
+                                    </div>
+                                </div>
+
+                                <!-- Key 2: Analytics API -->
+                                <div class="api-key-item" data-keyid="key2">
+                                    <div class="key-head">
+                                        <div class="key-name-wrap">
+                                            <strong>Analytics & Telemetry API</strong>
+                                            <span class="pill-badge pill-green-sm">ACTIVE TELEMETRY</span>
+                                        </div>
+                                        <span class="key-created-tag">Created 14 days ago</span>
+                                    </div>
+                                    <div class="key-input-row">
+                                        <div class="key-value-box">
+                                            <span class="key-val-display" id="keyVal2">an_live_••••••••••••••••66ab</span>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm btn-reveal" data-target="2">Reveal</button>
+                                        <button class="btn btn-outline btn-sm btn-copy" data-target="2">Copy</button>
+                                        <button class="btn btn-outline btn-sm btn-regen" data-target="2">Regenerate</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-outline btn-full" id="openAddApiKeyModalBtn" style="margin-top: 1rem;">
+                                <span>+ Generate New API Key</span>
+                            </button>
+                        </div>
+
+                        <!-- SECTION 7: PLAN & USAGE -->
+                        <div class="card settings-section-card" id="sectionPlanUsage">
+                            <div class="section-card-header">
+                                <div>
+                                    <h3 class="section-card-title">Plan & Resource Usage</h3>
+                                    <p class="section-card-desc">Active enterprise tier and monthly consumption metrics.</p>
+                                </div>
+                                <span class="pill-badge tsp-badge">DEMO TIER • EXPIRES IN 12 DAYS</span>
+                            </div>
+
+                            <div class="usage-bars-grid">
+                                <!-- Usage 1 -->
+                                <div class="usage-tile">
+                                    <div class="u-head">
+                                        <span class="u-title">Orders Processed</span>
+                                        <strong class="u-pct crimson-text">78.4%</strong>
+                                    </div>
+                                    <div class="u-track">
+                                        <div class="u-fill fill-crimson" style="width: 78.4%;"></div>
+                                    </div>
+                                    <div class="u-meta">
+                                        <span>7,842 processed</span>
+                                        <span>10,000 limit</span>
+                                    </div>
+                                </div>
+
+                                <!-- Usage 2 -->
+                                <div class="usage-tile">
+                                    <div class="u-head">
+                                        <span class="u-title">Optimization Runs</span>
+                                        <strong class="u-pct">49.6%</strong>
+                                    </div>
+                                    <div class="u-track">
+                                        <div class="u-fill fill-normal" style="width: 49.6%;"></div>
+                                    </div>
+                                    <div class="u-meta">
+                                        <span>248 completed</span>
+                                        <span>500 monthly limit</span>
+                                    </div>
+                                </div>
+
+                                <!-- Usage 3 -->
+                                <div class="usage-tile">
+                                    <div class="u-head">
+                                        <span class="u-title">Analytics Reports</span>
+                                        <strong class="u-pct">36.0%</strong>
+                                    </div>
+                                    <div class="u-track">
+                                        <div class="u-fill fill-normal" style="width: 36%;"></div>
+                                    </div>
+                                    <div class="u-meta">
+                                        <span>36 compiled</span>
+                                        <span>100 limit</span>
+                                    </div>
+                                </div>
+
+                                <!-- Usage 4 -->
+                                <div class="usage-tile">
+                                    <div class="u-head">
+                                        <span class="u-title">Telemetry Storage Quota</span>
+                                        <strong class="u-pct">24.0%</strong>
+                                    </div>
+                                    <div class="u-track">
+                                        <div class="u-fill fill-green" style="width: 24%;"></div>
+                                    </div>
+                                    <div class="u-meta">
+                                        <span>2.4 GB allocated</span>
+                                        <span>10.0 GB NVMe</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="plan-footer-action">
+                                <div class="plan-reset-note">
+                                    <span class="reset-clock-icon">🕒</span>
+                                    <span>Reset date: All calculation and simulation quotas renew automatically in <strong>12 days</strong>.</span>
+                                </div>
+                                <button class="btn btn-outline btn-sm" id="managePlanBtn">Manage Subscription Plan</button>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 8: DANGER ZONE -->
+                        <div class="card danger-zone-card" id="sectionDangerZone">
+                            <div class="danger-zone-header">
+                                <div class="d-title-wrap">
+                                    <div class="d-alert-icon">⚠️</div>
+                                    <div>
+                                        <h3 class="danger-title">Danger Zone</h3>
+                                        <p class="danger-sub">Irreversible actions for system data and administrator accounts.</p>
+                                    </div>
+                                </div>
+                                <span class="pill-badge pill-urgent-sm">DANGER ZONE</span>
+                            </div>
+
+                            <div class="danger-actions-list">
+                                <div class="danger-action-row">
+                                    <div>
+                                        <strong class="danger-act-name">Reset Demo Data</strong>
+                                        <p class="danger-act-desc">Remove all mock warehouse, product and order inventory data to initial state.</p>
+                                    </div>
+                                    <button class="btn btn-outline danger-outline-btn" id="dangerResetDemoBtn">Reset Demo Data</button>
+                                </div>
+
+                                <div class="danger-action-row">
+                                    <div>
+                                        <strong class="danger-act-name">Clear Optimization History</strong>
+                                        <p class="danger-act-desc">Clear stored TSP routes, slotting matrices and simulation records from local memory.</p>
+                                    </div>
+                                    <button class="btn btn-outline danger-outline-btn" id="dangerClearOptBtn">Clear History</button>
+                                </div>
+
+                                <div class="danger-action-row">
+                                    <div>
+                                        <strong class="danger-act-name">Delete Administrator Account</strong>
+                                        <p class="danger-act-desc">Permanently deactivate this warehouse administrator profile and revoke active session tokens.</p>
+                                    </div>
+                                    <button class="btn btn-primary danger-solid-btn" id="dangerDeleteAccountBtn">Delete Account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL: DANGER ZONE CONFIRMATION -->
+    <div class="modal-backdrop" id="dangerConfirmModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <h3 class="modal-title" id="dangerModalTitle">Confirm Destructive Action</h3>
+                    <p class="modal-subtitle" id="dangerModalSubtitle">Please confirm before proceeding.</p>
+                </div>
+                <button class="icon-button modal-close-btn" id="closeDangerModalBtn">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="dangerModalMessage" style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                    Are you sure you want to perform this action?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelDangerModalBtn">Cancel</button>
+                <button type="button" class="btn btn-primary danger-solid-btn" id="confirmDangerModalBtn">Confirm Action</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD API KEY -->
+    <div class="modal-backdrop" id="addApiKeyModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <h3 class="modal-title">Generate New API Key</h3>
+                    <p class="modal-subtitle">Provision authentication credentials for warehouse edge integrations.</p>
+                </div>
+                <button class="icon-button modal-close-btn" id="closeAddApiKeyModalBtn">✕</button>
+            </div>
+            <form id="addApiKeyForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">KEY NAME / SERVICE IDENTIFIER</label>
+                        <input type="text" id="newKeyName" class="form-input" placeholder="e.g. Mobile Cart Scanner API" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ENVIRONMENT</label>
+                        <select id="newKeyEnv" class="form-select">
+                            <option value="Production">Production Gateway</option>
+                            <option value="Staging">Staging & Simulation</option>
+                            <option value="Telemetry">Telemetry Stream Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelAddApiKeyBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">+ Generate Key</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-container" id="toastNotification">
+        <div class="toast-icon">✓</div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">Settings Saved</div>
+            <div class="toast-message" id="toastMessage">All warehouse preference matrices updated successfully.</div>
+        </div>
+    </div>
+
+    <script src="js/settings.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>
