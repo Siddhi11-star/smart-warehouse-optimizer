@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Warehouse Topology Graph. Visual 2D floorplan canvas showing shelves, corridors, and Dijkstra shortest paths.">
+  <title>Warehouse Graph | Warehouse Optimizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+</head>
+<body>
+
+  <!-- Common Navigation Bar -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div class="nav-brand-title">
+        <span class="main-text">Warehouse Optimizer</span>
+        <span class="sub-text">Intelligent Slotting & TSP Routing</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="layout.html">Layout Optimizer</a></li>
+      <li><a href="graph.html" class="active">Warehouse Graph</a></li>
+      <li><a href="order-picking.html">Order Picking</a></li>
+      <li><a href="waves.html">Wave Picking</a></li>
+      <li><a href="fleet.html">Fleet Balancing</a></li>
+    </ul>
+    <div class="nav-right-actions">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Warehouse Topology Graph</h1>
+        <p class="page-subtitle">Discrete Graph Model: Vertices represent shelves and packing station; weighted edges represent aisle distances</p>
+      </div>
+      <div>
+        <button id="btn-reload" class="btn btn-secondary" onclick="loadGraph()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Reload Graph
+        </button>
+      </div>
+    </div>
+
+    <div class="concept-tag">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="19" r="3"></circle>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+      </svg>
+      <div>
+        <strong>Graph Theory & Discrete Math:</strong> Undirected weighted graph $G = (V, E)$ stored in MySQL tables <code>shelves</code> and <code>edges</code>. Dijkstra's Algorithm with a min-heap priority queue computes exact shortest corridor walks between any nodes.
+      </div>
+    </div>
+
+    <!-- Canvas Layout & Details Inspector -->
+    <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 1.75rem; align-items: start;">
+      
+      <!-- Graph Canvas Container -->
+      <div class="card" id="graph-canvas-card" style="padding: 1.25rem; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <div class="card-title" style="margin-bottom: 0;">Warehouse Aisle Floorplan Canvas</div>
+          <div style="display: flex; gap: 0.75rem; font-size: 0.8rem; font-weight: normal; align-items: center;">
+            <span style="display: flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 12px; height: 12px; background: #10b981; border-radius: 50%; box-shadow: 0 0 6px #10b981; display: inline-block;"></span> 
+              Packing Hub
+            </span>
+            <span style="display: flex; align-items: center; gap: 0.35rem;">
+              <span style="width: 14px; height: 10px; background: #2563eb; border-radius: 3px; display: inline-block;"></span> 
+              Storage Shelf
+            </span>
+          </div>
+        </div>
+
+        <!-- Floating Interactive Toolbar -->
+        <div class="canvas-controls-bar">
+          <button class="canvas-ctrl-btn" id="btn-zoom-in" title="Zoom In (+)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </button>
+          <span class="canvas-zoom-label" id="zoom-level-text">100%</span>
+          <button class="canvas-ctrl-btn" id="btn-zoom-out" title="Zoom Out (-)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </button>
+          <button class="canvas-ctrl-btn" id="btn-zoom-reset" title="Reset View (1:1)" style="font-size: 0.72rem; min-width: 32px;">1:1</button>
+          <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.25); margin: 0 2px;"></div>
+          <button class="canvas-ctrl-btn" id="btn-fullscreen-toggle" title="Toggle Fullscreen (F)">
+            <svg id="fs-icon-expand" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+            <svg id="fs-icon-compress" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+              <polyline points="4 14 10 14 10 20"></polyline>
+              <polyline points="20 10 14 10 14 4"></polyline>
+              <line x1="14" y1="10" x2="21" y2="3"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="canvas-wrapper" style="overflow: hidden; cursor: grab;">
+          <canvas id="graph-canvas" width="820" height="520" style="background: var(--canvas-bg); border-radius: 8px;"></canvas>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+          <span>Tip: Click any shelf node or the green packing hub on the canvas to inspect real-time metrics, load, and corridor connections.</span>
+          <span style="font-weight: 600; color: var(--primary); white-space: nowrap; margin-left: 1rem;">
+            <kbd>Scroll</kbd> Zoom &bull; 
+            <kbd>Drag</kbd> Pan &bull; 
+            <kbd>F</kbd> Fullscreen
+          </span>
+        </div>
+      </div>
+
+      <!-- Node Inspector Panel -->
+      <div class="card">
+        <div class="card-title">Location Inspector</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Click on any node in the canvas to inspect its details and connections.
+        </p>
+
+        <div id="inspector-content">
+          <div class="stat-card highlight" style="margin-bottom: 1.25rem;">
+            <div class="stat-label">Selected Node</div>
+            <div class="stat-value" id="node-id" style="font-size: 1.75rem;">Shelf 1</div>
+            <div class="stat-desc" id="node-type">Packing & Dispatch Hub</div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div style="background: var(--bg); border: 1px solid var(--border); padding: 0.85rem; border-radius: 8px;">
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Distance to Hub</div>
+              <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);" id="node-dist">0.0 m</div>
+            </div>
+            <div style="background: var(--bg); border: 1px solid var(--border); padding: 0.85rem; border-radius: 8px;">
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Current Load</div>
+              <div style="font-size: 1.35rem; font-weight: 800; color: #2563eb;" id="node-load">0 / 999</div>
+            </div>
+          </div>
+
+          <div class="card-title" style="font-size: 0.95rem; margin-bottom: 0.5rem;">Direct Corridors (Adjacent Edges)</div>
+          <div id="node-neighbors" style="font-size: 0.875rem; color: var(--text-main);">
+            <em>Click a shelf node to see its aisle connections.</em>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="container" style="margin: 0 auto;">
+      Warehouse Layout & Order Picking Optimizer &bull; High-Performance Graph Routing Engine
+    </div>
+  </footer>
+
+  <script>
+    let graphData = { nodes: [], edges: [] };
+    let selectedNodeId = 1;
+    let hoveredNodeId = null;
+
+    // View Transformation State for Pan & Zoom
+    let view = {
+      scale: 1.0,
+      minScale: 0.5,
+      maxScale: 3.5,
+      x: 0,
+      y: 0,
+      isDragging: false,
+      dragStartX: 0,
+      dragStartY: 0
+    };
+    let isFullscreen = false;
+
+    async function loadGraph() {
+      try {
+        const res = await fetch('/api/warehouse/graph');
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || errData.hint || `HTTP ${res.status}`);
+        }
+        graphData = await res.json();
+        if (!graphData.nodes || graphData.nodes.length === 0) {
+          throw new Error("No warehouse nodes found in database.");
+        }
+
+        setupCanvasInteractivity();
+        resizeCanvas();
+        selectNode(1);
+      } catch (err) {
+        console.error("Failed to load graph:", err);
+      }
+    }
+
+    function setupCanvasInteractivity() {
+      const canvas = document.getElementById('graph-canvas');
+
+      // Mouse Wheel Zoom centered at cursor
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const zoomFactor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+        zoomAt(mouseX, mouseY, zoomFactor);
+      }, { passive: false });
+
+      // Click & Drag Panning
+      let didDrag = false;
+      canvas.addEventListener('mousedown', (e) => {
+        if (e.button === 0) {
+          view.isDragging = true;
+          didDrag = false;
+          view.dragStartX = e.clientX - view.x;
+          view.dragStartY = e.clientY - view.y;
+          canvas.style.cursor = 'grabbing';
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        if (view.isDragging) {
+          view.x = e.clientX - view.dragStartX;
+          view.y = e.clientY - view.dragStartY;
+          didDrag = true;
+          drawGraph();
+          return;
+        }
+
+        if (mouseX >= 0 && mouseX <= rect.width && mouseY >= 0 && mouseY <= rect.height) {
+          const worldX = (mouseX - view.x) / view.scale;
+          const worldY = (mouseY - view.y) / view.scale;
+
+          let hovered = null;
+          for (const n of graphData.nodes) {
+            const r = (n.id === 1) ? 30 : 28;
+            if (Math.hypot(n.x - worldX, n.y - worldY) <= r) {
+              hovered = n.id;
+              break;
+            }
+          }
+
+          if (hovered !== hoveredNodeId) {
+            hoveredNodeId = hovered;
+            canvas.style.cursor = hovered ? 'pointer' : 'grab';
+            drawGraph();
+          }
+        } else if (hoveredNodeId) {
+          hoveredNodeId = null;
+          drawGraph();
+        }
+      });
+
+      window.addEventListener('mouseup', (e) => {
+        if (view.isDragging) {
+          view.isDragging = false;
+          canvas.style.cursor = hoveredNodeId ? 'pointer' : 'grab';
+        }
+      });
+
+      // Selection on click (only if not dragging)
+      canvas.addEventListener('click', (e) => {
+        if (didDrag) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const worldX = (mouseX - view.x) / view.scale;
+        const worldY = (mouseY - view.y) / view.scale;
+
+        for (const n of graphData.nodes) {
+          const r = (n.id === 1) ? 30 : 28;
+          if (Math.hypot(n.x - worldX, n.y - worldY) <= r) {
+            selectNode(n.id);
+            break;
+          }
+        }
+      });
+
+      // Double-click to reset view
+      canvas.addEventListener('dblclick', () => {
+        resetView();
+      });
+
+      // Controls toolbar buttons
+      document.getElementById('btn-zoom-in').addEventListener('click', () => zoomBy(1.2));
+      document.getElementById('btn-zoom-out').addEventListener('click', () => zoomBy(1 / 1.2));
+      document.getElementById('btn-zoom-reset').addEventListener('click', resetView);
+      document.getElementById('btn-fullscreen-toggle').addEventListener('click', toggleFullscreen);
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if ((e.key === 'f' || e.key === 'F') && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          toggleFullscreen();
+        } else if (e.key === 'Escape' && isFullscreen) {
+          toggleFullscreen();
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && isFullscreen) {
+          exitFullscreenUI();
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+      });
+    }
+
+    function zoomAt(cx, cy, factor) {
+      const newScale = Math.min(view.maxScale, Math.max(view.minScale, view.scale * factor));
+      if (newScale === view.scale) return;
+
+      view.x = cx - (cx - view.x) * (newScale / view.scale);
+      view.y = cy - (cy - view.y) * (newScale / view.scale);
+      view.scale = newScale;
+
+      updateZoomLabel();
+      drawGraph();
+    }
+
+    function zoomBy(factor) {
+      const canvas = document.getElementById('graph-canvas');
+      const rect = canvas.getBoundingClientRect();
+      zoomAt(rect.width / 2, rect.height / 2, factor);
+    }
+
+    function resetView() {
+      view.scale = 1.0;
+      view.x = 0;
+      view.y = 0;
+      updateZoomLabel();
+      drawGraph();
+    }
+
+    function updateZoomLabel() {
+      const label = document.getElementById('zoom-level-text');
+      if (label) {
+        label.textContent = `${Math.round(view.scale * 100)}%`;
+      }
+    }
+
+    function toggleFullscreen() {
+      const card = document.getElementById('graph-canvas-card');
+      if (!isFullscreen) {
+        card.classList.add('card-fullscreen');
+        isFullscreen = true;
+        document.getElementById('fs-icon-expand').style.display = 'none';
+        document.getElementById('fs-icon-compress').style.display = 'block';
+
+        if (card.requestFullscreen) {
+          card.requestFullscreen().catch(() => {});
+        }
+      } else {
+        exitFullscreenUI();
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+      setTimeout(resizeCanvas, 60);
+    }
+
+    function exitFullscreenUI() {
+      const card = document.getElementById('graph-canvas-card');
+      card.classList.remove('card-fullscreen');
+      isFullscreen = false;
+      document.getElementById('fs-icon-expand').style.display = 'block';
+      document.getElementById('fs-icon-compress').style.display = 'none';
+      setTimeout(resizeCanvas, 60);
+    }
+
+    function resizeCanvas() {
+      const canvas = document.getElementById('graph-canvas');
+      if (!canvas) return;
+      const wrapper = canvas.parentElement;
+      const rect = wrapper.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      const w = Math.floor(rect.width > 0 ? rect.width : 820);
+      const h = isFullscreen ? Math.floor(window.innerHeight - 90) : 520;
+
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+
+      drawGraph();
+    }
+
+    function drawRealisticFloor(ctx) {
+      const dark = typeof isDarkMode === 'function' && isDarkMode();
+      ctx.save();
+      ctx.strokeStyle = dark ? 'rgba(255, 255, 255, 0.04)' : '#f1f5f9';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= 860; x += 25) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, 560);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= 560; y += 25) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(860, y);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = dark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
+      ctx.lineWidth = 1.5;
+      for (let x = 0; x <= 860; x += 100) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, 560);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= 560; y += 100) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(860, y);
+        ctx.stroke();
+      }
+
+      // Outer safety boundary
+      ctx.strokeStyle = dark ? 'rgba(255, 255, 255, 0.12)' : '#e2e8f0';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(30, 20, 755, 480);
+
+      // Central Corridor Lane Markings (y = 260)
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([8, 8]);
+      ctx.beginPath();
+      ctx.moveTo(135, 246);
+      ctx.lineTo(760, 246);
+      ctx.moveTo(135, 274);
+      ctx.lineTo(760, 274);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    function drawAisleSignboards(ctx) {
+      const aisles = [
+        { label: 'AISLE 01', range: 'BAYS 02-07', x: 220 },
+        { label: 'AISLE 02', range: 'BAYS 08-13', x: 380 },
+        { label: 'AISLE 03', range: 'BAYS 14-19', x: 540 },
+        { label: 'AISLE 04', range: 'BAYS 20-25', x: 700 }
+      ];
+
+      aisles.forEach(a => {
+        ctx.save();
+        const w = 82;
+        const h = 24;
+        const x = a.x - w / 2;
+        const y = 34;
+
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x + 10, 20);
+        ctx.lineTo(x + 10, y);
+        ctx.moveTo(x + w - 10, 20);
+        ctx.lineTo(x + w - 10, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, 4);
+        ctx.fill();
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, 3, [4, 4, 0, 0]);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9.5px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(a.label, a.x, y + 10);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '600 7px sans-serif';
+        ctx.fillText(a.range, a.x, y + 18);
+        ctx.restore();
+      });
+    }
+
+    function drawGraph() {
+      const canvas = document.getElementById('graph-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const dark = typeof isDarkMode === 'function' && isDarkMode();
+      ctx.fillStyle = dark ? '#0b0f19' : '#f8fafc';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // World scale
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.translate(view.x, view.y);
+      ctx.scale(view.scale, view.scale);
+
+      drawRealisticFloor(ctx);
+      drawAisleSignboards(ctx);
+
+      const nodeMap = {};
+      graphData.nodes.forEach(n => { nodeMap[n.id] = n; });
+
+      // 1. Draw Corridors (Walkable Graph Edges)
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = dark ? '#334155' : '#cbd5e1';
+
+      graphData.edges.forEach(e => {
+        const u = nodeMap[e.from_shelf_id];
+        const v = nodeMap[e.to_shelf_id];
+        if (u && v) {
+          ctx.beginPath();
+          ctx.moveTo(u.x, u.y);
+          ctx.lineTo(v.x, v.y);
+          ctx.stroke();
+
+          // Distance Pill along corridor
+          const midX = (u.x + v.x) / 2;
+          const midY = (u.y + v.y) / 2;
+          ctx.save();
+          ctx.fillStyle = dark ? '#1e293b' : '#ffffff';
+          ctx.beginPath();
+          ctx.roundRect(midX - 15, midY - 9, 30, 18, 4);
+          ctx.fill();
+          ctx.strokeStyle = dark ? '#334155' : '#cbd5e1';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.fillStyle = dark ? '#cbd5e1' : '#475569';
+          ctx.font = 'bold 9px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${e.distance}m`, midX, midY);
+          ctx.restore();
+        }
+      });
+
+      // 2. Draw Nodes (Packing Hub & Heavy-Duty Pallet Racks)
+      graphData.nodes.forEach(n => {
+        const isPacking = n.id === 1;
+        const isSelected = n.id === selectedNodeId;
+        const isHovered = n.id === hoveredNodeId;
+
+        if (isPacking) {
+          ctx.save();
+          const pw = 74;
+          const ph = 54;
+          const px = n.x - pw / 2;
+          const py = n.y - ph / 2;
+
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(px - 4, py - 4, pw + 8, ph + 8);
+
+          // Hub aura
+          if (isSelected) {
+            ctx.shadowColor = 'rgba(16, 185, 129, 0.7)';
+            ctx.shadowBlur = 16;
+          }
+
+          const grad = ctx.createLinearGradient(px, py, px, py + ph);
+          grad.addColorStop(0, isSelected ? '#059669' : '#10b981');
+          grad.addColorStop(1, '#047857');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.roundRect(px, py, pw, ph, 8);
+          ctx.fill();
+
+          ctx.strokeStyle = isSelected ? '#a7f3d0' : '#ffffff';
+          ctx.lineWidth = isSelected ? 3 : 2;
+          ctx.stroke();
+
+          // Conveyor rollers lines
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+          ctx.lineWidth = 1.5;
+          for (let ly = py + 12; ly <= py + ph - 12; ly += 7) {
+            ctx.beginPath();
+            ctx.moveTo(px + 8, ly);
+            ctx.lineTo(px + 20, ly);
+            ctx.stroke();
+          }
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 11px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText("PACK DOCK", n.x + 8, n.y - 6);
+
+          ctx.font = '700 8px sans-serif';
+          ctx.fillStyle = '#ecfdf5';
+          ctx.fillText("ORIGIN / STAGING", n.x + 8, n.y + 8);
+
+          ctx.restore();
+        } else {
+          // Heavy-duty pallet rack
+          ctx.save();
+          const w = 54;
+          const h = 32;
+          const x = n.x - w / 2;
+          const y = n.y - h / 2;
+
+          if (isSelected) {
+            ctx.shadowColor = 'rgba(37, 99, 235, 0.6)';
+            ctx.shadowBlur = 14;
+          } else if (isHovered) {
+            ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
+            ctx.shadowBlur = 10;
+          }
+
+          const rackGrad = ctx.createLinearGradient(x, y, x, y + h);
+          if (isSelected) {
+            rackGrad.addColorStop(0, '#2563eb');
+            rackGrad.addColorStop(1, '#1d4ed8');
+          } else {
+            rackGrad.addColorStop(0, '#475569');
+            rackGrad.addColorStop(1, '#334155');
+          }
+
+          ctx.fillStyle = rackGrad;
+          ctx.beginPath();
+          ctx.roundRect(x, y, w, h, 5);
+          ctx.fill();
+
+          ctx.strokeStyle = isSelected ? '#93c5fd' : (isHovered ? '#60a5fa' : '#64748b');
+          ctx.lineWidth = isSelected ? 2.5 : 1.2;
+          ctx.stroke();
+
+          // Reset shadow
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+
+          // Uprights
+          ctx.fillStyle = isSelected ? '#1e3a8a' : '#1e293b';
+          ctx.fillRect(x, y, 4, h);
+          ctx.fillRect(x + w - 4, y, 4, h);
+
+          // Bay divider
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(n.x, y + 3);
+          ctx.lineTo(n.x, y + h - 3);
+          ctx.stroke();
+
+          // Shelf Label
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 11px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`S-${String(n.id).padStart(2, '0')}`, n.x, n.y - 1);
+
+          ctx.restore();
+        }
+      });
+
+      ctx.restore(); // Restore world scale
+
+      // Fixed HUD Overlays in Screen Coordinates
+      const logicalWidth = canvas.width / dpr;
+      const logicalHeight = canvas.height / dpr;
+      drawScreenHUD(ctx, logicalWidth, logicalHeight);
+
+      ctx.restore(); // Restore DPR
+    }
+
+    function drawScreenHUD(ctx, width, height) {
+      ctx.save();
+      const cx = 35;
+      const cy = 35;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 14, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = '#3b82f6';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 10);
+      ctx.lineTo(cx - 4, cy + 3);
+      ctx.lineTo(cx, cy);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 10);
+      ctx.lineTo(cx + 4, cy + 3);
+      ctx.lineTo(cx, cy);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 7px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('N', cx, cy - 11);
+
+      const dark = typeof isDarkMode === 'function' && isDarkMode();
+      ctx.fillStyle = dark ? '#f8fafc' : '#0f172a';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('FACILITY MDC-01 • TOPOLOGY MAP', cx + 22, cy - 2);
+      ctx.fillStyle = dark ? '#94a3b8' : '#64748b';
+      ctx.font = '600 8.5px sans-serif';
+      ctx.fillText('AISLE CORRIDORS & METRIC DISTANCE MATRIX', cx + 22, cy + 9);
+
+      // Scale Bar
+      const scaleX = 35;
+      const scaleY = height - 25;
+      const scaleMetersWidth = 50 * view.scale;
+
+      ctx.strokeStyle = dark ? '#64748b' : '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(scaleX, scaleY - 4);
+      ctx.lineTo(scaleX, scaleY);
+      ctx.lineTo(scaleX + scaleMetersWidth, scaleY);
+      ctx.lineTo(scaleX + scaleMetersWidth, scaleY - 4);
+      ctx.stroke();
+
+      ctx.fillStyle = dark ? '#cbd5e1' : '#475569';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('10 METERS', scaleX + scaleMetersWidth / 2, scaleY - 5);
+      ctx.restore();
+    }
+
+    function selectNode(id) {
+      selectedNodeId = id;
+      drawGraph();
+
+      const n = graphData.nodes.find(node => node.id === id);
+      if (!n) return;
+
+      const isPacking = n.id === 1;
+      document.getElementById('node-id').textContent = isPacking ? "Packing Hub" : `Shelf ${n.id}`;
+      document.getElementById('node-type').textContent = isPacking ? "Dispatch & Origin Station" : `Aisle Storage Location`;
+      document.getElementById('node-dist').textContent = `${n.distance_to_packing} m`;
+      document.getElementById('node-load').textContent = isPacking ? "Infinite" : `${n.current_load} / ${n.capacity}`;
+
+      const neighbors = graphData.edges.filter(e => e.from_shelf_id === id || e.to_shelf_id === id);
+      const neighborDiv = document.getElementById('node-neighbors');
+      if (neighbors.length === 0) {
+        neighborDiv.innerHTML = '<em>No direct edges</em>';
+      } else {
+        neighborDiv.innerHTML = '<ul style="list-style: none; padding: 0;">' + 
+          neighbors.map(e => {
+            const other = (e.from_shelf_id === id) ? e.to_shelf_id : e.from_shelf_id;
+            const otherLabel = (other === 1) ? 'Packing Area (Shelf 1)' : `Shelf ${other}`;
+            return `<li style="padding: 0.4rem 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+              <span>&bull; Direct corridor to <strong>${otherLabel}</strong></span>
+              <span class="badge badge-primary">${e.distance}m</span>
+            </li>`;
+          }).join('') + '</ul>';
+      }
+    }
+
+    window.addEventListener('themechange', () => {
+      const canvas = document.getElementById('graph-canvas');
+      if (canvas) {
+        canvas.style.background = isDarkMode() ? '#0b0f19' : '#f8fafc';
+        drawGraph();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadGraph);
+  </script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Warehouse Layout & Order Picking Optimizer Dashboard. Real-time evaluation of greedy inventory slotting and graph-based TSP order picking.">
+  <title>Dashboard | Warehouse Optimizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+</head>
+<body>
+
+  <!-- Common Navigation Bar -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div class="nav-brand-title">
+        <span class="main-text">Warehouse Optimizer</span>
+        <span class="sub-text">Intelligent Slotting & TSP Routing</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="layout.html">Layout Optimizer</a></li>
+      <li><a href="graph.html">Warehouse Graph</a></li>
+      <li><a href="order-picking.html">Order Picking</a></li>
+      <li><a href="waves.html">Wave Picking</a></li>
+      <li><a href="fleet.html">Fleet Balancing</a></li>
+    </ul>
+    <div class="nav-right-actions">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Warehouse Optimization Dashboard</h1>
+        <p class="page-subtitle">Evaluation of Greedy Layout Assignment & Graph-based Order Picking</p>
+      </div>
+      <div>
+        <button id="btn-refresh" class="btn btn-secondary" onclick="loadDashboard()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Refresh Data
+        </button>
+      </div>
+    </div>
+
+    <div class="concept-tag">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <div>
+        <strong>Core System Mechanism:</strong> This system applies <em>Greedy Heuristic Slotting</em> based on Pareto sales velocity and <em>TSP Graph Routing</em> (Dijkstra + Permutations) to minimize worker travel distance.
+      </div>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="stats-grid">
+      <div class="stat-card highlight">
+        <div class="stat-label">
+          <span>Catalog Products</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-value" id="stat-products">--</div>
+        <div class="stat-desc">Across 6 distinct product categories</div>
+      </div>
+
+      <div class="stat-card violet">
+        <div class="stat-label">
+          <span>Storage Shelves</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+        </div>
+        <div class="stat-value" id="stat-shelves">--</div>
+        <div class="stat-desc">4 storage aisles + 1 packing station</div>
+      </div>
+
+      <div class="stat-card warning">
+        <div class="stat-label">
+          <span>Customer Orders</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <div class="stat-value" id="stat-orders">--</div>
+        <div class="stat-desc">Evaluated for route benchmarking</div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-label">
+          <span>Pick Efficiency Gain</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-value" id="stat-reduction" style="color: #10b981;">--%</div>
+        <div class="stat-desc" id="stat-saved-desc">Distance reduction achieved</div>
+      </div>
+    </div>
+
+    <!-- Before vs After Empirical Proof Banner -->
+    <div class="card">
+      <div class="card-title">
+        <span>Empirical Proof: Before vs After Optimization</span>
+        <span class="badge badge-success">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Live Evaluation
+        </span>
+      </div>
+
+      <div class="comparison-banner">
+        <div class="comparison-metric">
+          <div class="label">Baseline Avg Distance</div>
+          <div class="val" id="banner-before">-- m</div>
+          <div class="stat-desc" style="color: #94a3b8;">Random shelf placement</div>
+        </div>
+        <div class="comparison-metric">
+          <div class="label">Optimized Avg Distance</div>
+          <div class="val" id="banner-after">-- m</div>
+          <div class="stat-desc" style="color: #94a3b8;">Greedy velocity slotting</div>
+        </div>
+        <div class="comparison-metric reduction">
+          <div class="label">Average Distance Reduction</div>
+          <div class="val" id="banner-reduction">--%</div>
+          <div class="stat-desc" style="color: #86efac;">Shorter walking tours</div>
+        </div>
+        <div class="comparison-metric">
+          <div class="label">Total Distance Saved</div>
+          <div class="val" id="banner-saved" style="color: #60a5fa;">-- m</div>
+          <div class="stat-desc" style="color: #94a3b8;">Across evaluated orders</div>
+        </div>
+
+        <!-- Visual Progress Bar -->
+        <div class="comparison-progress-container">
+          <div class="progress-header">
+            <span>Optimization Efficiency Ratio: <strong>Optimized vs Baseline</strong></span>
+            <span id="progress-percent-label">31.1% Distance Reduction</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="efficiency-bar" class="progress-bar-fill" style="width: 68.9%;"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <p style="color: var(--text-muted); font-size: 0.925rem; margin-bottom: 1.25rem;">
+        The table below shows route distances calculated for customer orders under both layouts using Dijkstra shortest-path corridors:
+      </p>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Routing Algorithm</th>
+              <th>Before Layout</th>
+              <th>After Layout</th>
+              <th>Distance Saved</th>
+              <th>Reduction %</th>
+            </tr>
+          </thead>
+          <tbody id="orders-breakdown-body">
+            <tr>
+              <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                Loading comparison data from /api/statistics...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="container" style="margin: 0 auto;">
+      Warehouse Layout & Order Picking Optimizer &bull; High-Performance Graph Routing Engine
+    </div>
+  </footer>
+
+  <script>
+    async function loadDashboard() {
+      const btn = document.getElementById('btn-refresh');
+      btn.style.opacity = '0.7';
+
+      try {
+        const res = await fetch('/api/statistics');
+        const data = await res.json();
+
+        // Populate Summary Stats
+        document.getElementById('stat-products').textContent = data.total_products || 0;
+        document.getElementById('stat-shelves').textContent = data.total_shelves || 0;
+        document.getElementById('stat-orders').textContent = data.total_orders || 0;
+        document.getElementById('stat-reduction').textContent = data.percent_reduction + '%';
+        document.getElementById('stat-saved-desc').textContent = `${data.total_distance_saved} meters total saved`;
+
+        // Populate Comparison Banner
+        document.getElementById('banner-before').textContent = data.avg_distance_before + ' m';
+        document.getElementById('banner-after').textContent = data.avg_distance_after + ' m';
+        document.getElementById('banner-reduction').textContent = '-' + data.percent_reduction + '%';
+        document.getElementById('banner-saved').textContent = data.total_distance_saved + ' m';
+
+        // Progress bar ratio
+        if (data.avg_distance_before > 0) {
+          const ratio = (data.avg_distance_after / data.avg_distance_before) * 100;
+          document.getElementById('efficiency-bar').style.width = `${Math.min(100, ratio).toFixed(1)}%`;
+          document.getElementById('progress-percent-label').textContent = `${data.percent_reduction}% Distance Reduction (${data.total_distance_saved}m saved)`;
+        }
+
+
+        // Populate Table
+        const tbody = document.getElementById('orders-breakdown-body');
+        tbody.innerHTML = '';
+
+        if (!data.order_breakdown || data.order_breakdown.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">No orders found.</td></tr>';
+          return;
+        }
+
+        data.order_breakdown.forEach(row => {
+          const tr = document.createElement('tr');
+          const isTsp = row.algorithm.includes('Exact');
+          const badgeClass = isTsp ? 'badge-primary' : 'badge-warning';
+
+          tr.innerHTML = `
+            <td><strong>#${row.order_id}</strong></td>
+            <td style="font-weight: 500;">${row.customer_name}</td>
+            <td><span class="badge">${row.item_count} items</span></td>
+            <td><span class="badge ${badgeClass}">${row.algorithm}</span></td>
+            <td style="color: var(--text-muted);">${row.distance_before} m</td>
+            <td><strong style="color: var(--text-main);">${row.distance_after} m</strong></td>
+            <td><span style="color: #10b981; font-weight: 700;">-${row.distance_saved} m</span></td>
+            <td>
+              <span class="badge ${row.pct_saved > 0 ? 'badge-success' : 'badge-warning'}">
+                ${row.pct_saved > 0 ? '↓ ' + row.pct_saved + '%' : '0%'}
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error("Failed to load dashboard statistics:", err);
+      } finally {
+        btn.style.opacity = '1';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

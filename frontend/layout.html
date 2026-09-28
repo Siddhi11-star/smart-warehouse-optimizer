@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Greedy Layout Optimizer. Intelligently slot high-velocity warehouse inventory closer to packing under capacity and category constraints.">
+  <title>Layout Optimizer | Warehouse Optimizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+</head>
+<body>
+
+  <!-- Common Navigation Bar -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div class="nav-brand-title">
+        <span class="main-text">Warehouse Optimizer</span>
+        <span class="sub-text">Intelligent Slotting & TSP Routing</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="layout.html" class="active">Layout Optimizer</a></li>
+      <li><a href="graph.html">Warehouse Graph</a></li>
+      <li><a href="order-picking.html">Order Picking</a></li>
+      <li><a href="waves.html">Wave Picking</a></li>
+      <li><a href="fleet.html">Fleet Balancing</a></li>
+    </ul>
+    <div class="nav-right-actions">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Greedy Inventory Slotting Optimizer</h1>
+        <p class="page-subtitle">Reallocate high-velocity items closer to dispatch hub while enforcing strict capacity and safety constraints</p>
+      </div>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button id="btn-run" class="btn btn-primary" onclick="runLayoutOptimization()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Run Layout Optimizer
+        </button>
+        <button id="btn-save" class="btn btn-success" onclick="saveLayout()" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Save Layout to MySQL
+        </button>
+      </div>
+    </div>
+
+    <div class="concept-tag">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+      <div>
+        <strong>Optimization Heuristic:</strong>
+        1. Products sorted by pick velocity descending &bull;
+        2. Shelves sorted by corridor distance to packing ascending &bull;
+        3. Greedy assignment to nearest eligible shelf &bull;
+        4. Strict constraints verified: Shelf capacity &le; 5 units, Fragile & Heavy items strictly segregated.
+      </div>
+    </div>
+
+    <!-- Optimization Status Alert -->
+    <div id="status-alert" class="alert alert-info" style="display: none;"></div>
+
+    <!-- Optimization Summary Cards -->
+    <div class="stats-grid" id="summary-cards" style="display: none;">
+      <div class="stat-card highlight">
+        <div class="stat-label">Products Analyzed</div>
+        <div class="stat-value" id="res-total">0</div>
+        <div class="stat-desc">Full warehouse catalog evaluated</div>
+      </div>
+      <div class="stat-card violet">
+        <div class="stat-label">Products Reallocated</div>
+        <div class="stat-value" id="res-moved">0</div>
+        <div class="stat-desc">Moved to closer storage shelves</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Distance Saved / Cycle</div>
+        <div class="stat-value" id="res-saved" style="color: #10b981;">0 m</div>
+        <div class="stat-desc">Per single pick round-trip iteration</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Constraint Violations</div>
+        <div class="stat-value" style="color: #10b981;">0</div>
+        <div class="stat-desc">Capacities and safety rules verified</div>
+      </div>
+    </div>
+
+    <!-- Side-by-Side Comparison Table -->
+    <div class="card">
+      <div class="card-title">
+        <span>Old vs New Shelf Assignments (Side-by-Side Diff)</span>
+        <span id="diff-count-badge" class="badge">Awaiting Optimization</span>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Pick Velocity</th>
+              <th>Current (Old) Shelf</th>
+              <th>Current Distance</th>
+              <th>Optimized (New) Shelf</th>
+              <th>New Distance</th>
+              <th>Distance Delta</th>
+            </tr>
+          </thead>
+          <tbody id="layout-diff-body">
+            <tr>
+              <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                Click <strong>"Run Layout Optimizer"</strong> to generate the greedy allocation plan.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="container" style="margin: 0 auto;">
+      Warehouse Layout & Order Picking Optimizer &bull; High-Performance Graph Routing Engine
+    </div>
+  </footer>
+
+  <script>
+    let currentProposedAssignments = null;
+
+    async function runLayoutOptimization() {
+      const btnRun = document.getElementById('btn-run');
+      const alertBox = document.getElementById('status-alert');
+      btnRun.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10"></path>
+        </svg>
+        Optimizing...
+      `;
+      btnRun.disabled = true;
+
+      try {
+        const res = await fetch('/api/layout/optimize', { method: 'POST' });
+        const data = await res.json();
+
+        currentProposedAssignments = data.assignments;
+
+        // Show Summary Cards
+        document.getElementById('summary-cards').style.display = 'grid';
+        document.getElementById('res-total').textContent = data.summary.total_products;
+        document.getElementById('res-moved').textContent = data.summary.moved_count;
+        document.getElementById('res-saved').textContent = data.summary.total_distance_saved_per_round + ' m';
+
+        // Update alert
+        alertBox.className = 'alert alert-info';
+        alertBox.style.display = 'flex';
+        alertBox.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div>
+            <strong>Optimization Plan Ready!</strong> Proposed moving <strong>${data.summary.moved_count} items</strong> to closer shelves, saving <strong>${data.summary.total_distance_saved_per_round} meters</strong> per pick cycle. Click "Save Layout to MySQL" to apply permanently.
+          </div>
+        `;
+
+        // Render Table Diff
+        const tbody = document.getElementById('layout-diff-body');
+        tbody.innerHTML = '';
+
+        data.assignments.forEach(item => {
+          const tr = document.createElement('tr');
+          const isMoved = item.old_shelf_id !== item.new_shelf_id;
+          const isCloser = item.distance_diff > 0;
+
+          let diffBadge = '<span class="badge" style="background:#f1f5f9; color:#64748b;">Unchanged</span>';
+          if (isMoved && isCloser) {
+            diffBadge = `<span class="badge badge-success">↓ -${item.distance_diff}m (${Math.round((item.distance_diff / (item.old_distance || 1)) * 100)}% closer)</span>`;
+            tr.classList.add('highlight-row');
+          } else if (isMoved && !isCloser) {
+            diffBadge = `<span class="badge badge-warning">↑ +${Math.abs(item.distance_diff)}m</span>`;
+          }
+
+          let catBadge = 'badge-primary';
+          if (item.category === 'Fragile') catBadge = 'badge-warning';
+          if (item.category === 'Heavy') catBadge = 'badge-danger';
+          if (item.category === 'Tools') catBadge = 'badge-violet';
+          if (item.category === 'Electronics') catBadge = 'badge-cyan';
+          if (item.category === 'Safety') catBadge = 'badge-success';
+
+          tr.innerHTML = `
+            <td style="font-weight: 600;">${item.name}</td>
+            <td><span class="badge ${catBadge}">${item.category}</span></td>
+            <td><strong>${item.pick_frequency}</strong> units</td>
+            <td><span class="badge" style="background:#f1f5f9; color:#475569;">Shelf ${item.old_shelf_id}</span></td>
+            <td>${item.old_distance} m</td>
+            <td><span class="badge badge-primary" style="font-weight: 700;">Shelf ${item.new_shelf_id}</span></td>
+            <td><strong>${item.new_distance} m</strong></td>
+            <td>${diffBadge}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('diff-count-badge').className = 'badge badge-success';
+        document.getElementById('diff-count-badge').textContent = `${data.summary.moved_count} Items Reallocated`;
+        document.getElementById('btn-save').disabled = false;
+
+      } catch (err) {
+        console.error("Layout optimization failed:", err);
+        alertBox.className = 'alert alert-danger';
+        alertBox.style.display = 'flex';
+        alertBox.textContent = "Optimization failed: " + err.message;
+      } finally {
+        btnRun.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Run Layout Optimizer
+        `;
+        btnRun.disabled = false;
+      }
+    }
+
+    async function saveLayout() {
+      if (!currentProposedAssignments) return;
+      const btnSave = document.getElementById('btn-save');
+      const alertBox = document.getElementById('status-alert');
+      btnSave.textContent = "Saving to Database...";
+      btnSave.disabled = true;
+
+      try {
+        const payload = {
+          assignments: currentProposedAssignments.map(a => ({
+            product_id: a.product_id,
+            shelf_id: a.new_shelf_id
+          }))
+        };
+
+        const res = await fetch('/api/layout/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        alertBox.className = 'alert alert-success';
+        alertBox.style.display = 'flex';
+        alertBox.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <div>
+            <strong>Layout Successfully Saved!</strong> ${data.updated_count} product shelf assignments updated in MySQL database. The changes will now take effect in all order picking routes.
+          </div>
+        `;
+      } catch (err) {
+        console.error("Failed to save layout:", err);
+        alertBox.className = 'alert alert-danger';
+        alertBox.style.display = 'flex';
+        alertBox.textContent = "Failed to save: " + err.message;
+      } finally {
+        btnSave.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Save Layout to MySQL
+        `;
+        btnSave.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
