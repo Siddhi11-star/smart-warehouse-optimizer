@@ -932,8 +932,11 @@ function escapeHtml(str) {
   }[m]));
 }
 
-// Bootstrap on DOM ready
+// Bootstrap on DOM ready (standalone mode)
 document.addEventListener('DOMContentLoaded', () => {
-  init3DScene();
-  loadWarehouseData();
+  const container = document.getElementById('canvas-container');
+  if (container && !document.getElementById('graph-canvas')) {
+    init3DScene();
+    loadWarehouseData();
+  }
 });
