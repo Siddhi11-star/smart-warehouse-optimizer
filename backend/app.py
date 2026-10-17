@@ -7,9 +7,14 @@ Serves static frontend HTML/CSS directly.
 
 import os
 import re
+import csv
+import io
+import json
+import time
+import queue
 from functools import wraps
 import pymysql
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, Response
 from flask_cors import CORS
 
 from backend.models import Product, Shelf, Order, User, AuditLog
@@ -63,6 +68,50 @@ def get_system_status():
         "database_engine": engine,
         "host": DB_CONFIG["host"] if engine == "mysql" else "local_sqlite",
         "database": DB_CONFIG["database"] if engine == "mysql" else "wareopt.sqlite"
+    })
+
+# -------------------------------------------------------------
+# Real-Time SSE (Server-Sent Events) Infrastructure
+# -------------------------------------------------------------
+sse_subscribers = []
+
+def broadcast_sse_event(event_type: str, data: dict):
+    """Pushes an asynchronous operational event to all connected dashboard SSE clients."""
+    global sse_subscribers
+    payload = json.dumps({"type": event_type, "data": data, "timestamp": time.time()})
+    message = f"data: {payload}\n\n"
+    alive_subs = []
+    for q in sse_subscribers:
+        try:
+            q.put_nowait(message)
+            alive_subs.append(q)
+        except Exception:
+            pass
+    sse_subscribers = alive_subs
+
+@app.route("/api/events", methods=["GET"])
+def sse_stream():
+    """Real-time SSE event stream for active worker & manager terminals."""
+    def event_stream():
+        q = queue.Queue(maxsize=50)
+        sse_subscribers.append(q)
+        yield f"data: {json.dumps({'type': 'connected', 'message': 'SSE terminal connected', 'timestamp': time.time()})}\n\n"
+        try:
+            while True:
+                try:
+                    msg = q.get(timeout=20)
+                    yield msg
+                except queue.Empty:
+                    # Heartbeat to maintain persistent connection
+                    yield ": ping\n\n"
+        except GeneratorExit:
+            if q in sse_subscribers:
+                sse_subscribers.remove(q)
+
+    return Response(event_stream(), mimetype="text/event-stream", headers={
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+        "Connection": "keep-alive"
     })
 
 @app.errorhandler(pymysql.MySQLError)
@@ -1043,6 +1092,14 @@ def create_order():
         route_result["customer_name"] = customer_name
         route_result["items"] = order_items
 
+        broadcast_sse_event("new_order", {
+            "order_id": order_id,
+            "customer_name": customer_name,
+            "stop_count": route_result.get("stop_count", len(order_items)),
+            "total_distance": route_result.get("total_distance", 0.0),
+            "status": "Pending"
+        })
+
         return jsonify({
             "status": "success",
             "message": f"Order #{order_id} created successfully.",
@@ -1097,6 +1154,14 @@ def simulate_order():
         route_result["customer_name"] = customer_name
         route_result["items"] = order_items
 
+        broadcast_sse_event("new_order", {
+            "order_id": order_id,
+            "customer_name": customer_name,
+            "stop_count": route_result.get("stop_count", len(order_items)),
+            "total_distance": route_result.get("total_distance", 0.0),
+            "status": "Pending"
+        })
+
         return jsonify({
             "status": "success",
             "message": f"Simulated Order #{order_id} generated for {customer_name}.",
@@ -1134,6 +1199,12 @@ def update_order_status(order_id):
             cur.execute("UPDATE orders SET status = %s WHERE id = %s", (status_title, order_id))
             conn.commit()
 
+        broadcast_sse_event("order_status_changed", {
+            "order_id": order_id,
+            "previous_status": order["status"],
+            "new_status": status_title
+        })
+
         return jsonify({
             "status": "success",
             "message": f"Order #{order_id} status updated from '{order['status']}' to '{status_title}'.",
@@ -1169,6 +1240,11 @@ def complete_order(order_id):
             cur.execute("UPDATE orders SET status = 'Completed' WHERE id = %s", (order_id,))
             conn.commit()
 
+        broadcast_sse_event("order_completed", {
+            "order_id": order_id,
+            "items_deducted": len(items)
+        })
+
         return jsonify({
             "status": "success",
             "message": f"Order #{order_id} marked as Completed. Inventory deducted for {len(items)} line items.",
@@ -1176,6 +1252,80 @@ def complete_order(order_id):
             "items_deducted": len(items),
             "new_status": "Completed"
         })
+    finally:
+        conn.close()
+
+@app.route("/api/orders/<int:order_id>/verify-pick", methods=["POST"])
+def verify_order_pick(order_id):
+    """
+    Hardware Barcode / QR Code Pick Verification.
+    Validates scanned shelf or SKU barcode against expected stops for an order.
+    """
+    data = request.get_json() or {}
+    scanned_code = str(data.get("scanned_code", "")).strip().upper()
+    target_shelf_id = parse_int_arg("shelf_id", None)
+    target_prod_id = parse_int_arg("product_id", None)
+
+    if not scanned_code:
+        return jsonify({"verified": False, "error": "scanned_code is required."}), 400
+
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT oi.product_id, oi.quantity, p.name, p.assigned_shelf_id
+                FROM order_items oi
+                JOIN products p ON oi.product_id = p.id
+                WHERE oi.order_id = %s
+            """, (order_id,))
+            items = cur.fetchall()
+            if not items:
+                return jsonify({"verified": False, "error": f"Order #{order_id} not found or has no items."}), 404
+
+            matched = False
+            matched_shelf = None
+            matched_product = None
+
+            # Extract numeric components (e.g. 'SHELF-14' -> 14, 'S-14' -> 14, '14' -> 14)
+            shelf_match = re.search(r'(?:SHELF|S)?[ -]?(\d+)', scanned_code)
+            scanned_num = int(shelf_match.group(1)) if shelf_match else None
+
+            for it in items:
+                # Direct match with target shelf
+                if target_shelf_id and it["assigned_shelf_id"] == target_shelf_id:
+                    if scanned_num == target_shelf_id or scanned_code == f"SHELF-{target_shelf_id}" or scanned_code == f"S-{target_shelf_id}":
+                        matched = True
+                        matched_shelf = target_shelf_id
+                        matched_product = it["name"]
+                        break
+                elif target_prod_id and it["product_id"] == target_prod_id:
+                    if scanned_num == target_prod_id or scanned_code == f"SKU-{target_prod_id}" or scanned_code == it["name"].upper():
+                        matched = True
+                        matched_shelf = it["assigned_shelf_id"]
+                        matched_product = it["name"]
+                        break
+                elif scanned_num and (scanned_num == it["assigned_shelf_id"] or scanned_num == it["product_id"]):
+                    matched = True
+                    matched_shelf = it["assigned_shelf_id"]
+                    matched_product = it["name"]
+                    break
+
+            if matched:
+                return jsonify({
+                    "status": "success",
+                    "verified": True,
+                    "order_id": order_id,
+                    "shelf_id": matched_shelf,
+                    "product_name": matched_product,
+                    "message": f"Verified pick for '{matched_product}' at Shelf S-{matched_shelf}."
+                })
+            else:
+                return jsonify({
+                    "status": "mismatch",
+                    "verified": False,
+                    "order_id": order_id,
+                    "message": f"Barcode '{scanned_code}' does not match expected stop Shelf S-{target_shelf_id or '?'}"
+                }), 400
     finally:
         conn.close()
 
@@ -1316,6 +1466,157 @@ def reset_simulated_orders():
             "status": "success",
             "message": f"Purged {len(simulated_ids)} simulated orders. 12 benchmark orders preserved.",
             "deleted_count": len(simulated_ids)
+        })
+    finally:
+        conn.close()
+
+# -------------------------------------------------------------
+# Enterprise CSV Bulk Operations (Import & Export)
+# -------------------------------------------------------------
+
+@app.route("/api/inventory/export", methods=["GET"])
+def export_inventory_csv():
+    """Exports entire SKU catalog and shelf slotting as downloadable CSV."""
+    conn = get_db()
+    try:
+        products = fetch_all_products(conn)
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["id", "name", "category", "stock_quantity", "pick_frequency", "assigned_shelf_id"])
+        for p in products:
+            writer.writerow([
+                p.id,
+                p.name,
+                p.category or "Standard",
+                p.stock_quantity if p.stock_quantity is not None else 50,
+                p.pick_frequency or 0.0,
+                p.assigned_shelf_id or ""
+            ])
+
+        output.seek(0)
+        return Response(output.getvalue(), mimetype="text/csv", headers={
+            "Content-Disposition": "attachment; filename=warehouse_inventory_export.csv",
+            "Cache-Control": "no-cache"
+        })
+    finally:
+        conn.close()
+
+@app.route("/api/inventory/import", methods=["POST"])
+def import_inventory_csv():
+    """Bulk imports/updates SKU catalog from CSV file upload or raw payload."""
+    raw_content = ""
+    if "file" in request.files:
+        f = request.files["file"]
+        raw_content = f.read().decode("utf-8", errors="replace")
+    elif request.data:
+        raw_content = request.data.decode("utf-8", errors="replace")
+    elif request.is_json:
+        raw_content = request.get_json().get("csv_data", "")
+
+    if not raw_content.strip():
+        return jsonify({"error": "No CSV content provided. Upload a file or send CSV text."}), 400
+
+    conn = get_db()
+    try:
+        reader = csv.DictReader(io.StringIO(raw_content))
+        imported_count = 0
+        updated_count = 0
+        with conn.cursor() as cur:
+            for row in reader:
+                name = row.get("name") or row.get("Name")
+                if not name:
+                    continue
+                category = row.get("category") or row.get("Category") or "Standard"
+                try:
+                    stock = max(0, int(float(row.get("stock_quantity") or row.get("stock") or 50)))
+                except (ValueError, TypeError):
+                    stock = 50
+                try:
+                    freq = max(0, int(float(row.get("pick_frequency") or row.get("velocity") or 0)))
+                except (ValueError, TypeError):
+                    freq = 0
+                try:
+                    shelf_raw = row.get("assigned_shelf_id") or row.get("shelf_id")
+                    shelf_id = int(shelf_raw) if shelf_raw else None
+                except (ValueError, TypeError):
+                    shelf_id = None
+
+                p_id_raw = row.get("id") or row.get("ID")
+                p_id = int(p_id_raw) if (p_id_raw and str(p_id_raw).isdigit()) else None
+
+                if p_id:
+                    cur.execute("SELECT id FROM products WHERE id = %s", (p_id,))
+                    exists = cur.fetchone()
+                    if exists:
+                        cur.execute("""
+                            UPDATE products SET name = %s, category = %s, stock_quantity = %s,
+                            assigned_shelf_id = %s WHERE id = %s
+                        """, (name, category, stock, shelf_id, p_id))
+                        if freq > 0:
+                            cur.execute("INSERT INTO sales (product_id, month, units_sold) VALUES (%s, %s, %s)", (p_id, "Imported", freq))
+                        updated_count += 1
+                        continue
+
+                # Insert new product
+                cur.execute("""
+                    INSERT INTO products (name, category, stock_quantity, assigned_shelf_id)
+                    VALUES (%s, %s, %s, %s)
+                """, (name, category, stock, shelf_id))
+                new_p_id = cur.lastrowid
+                if freq > 0 and new_p_id:
+                    cur.execute("INSERT INTO sales (product_id, month, units_sold) VALUES (%s, %s, %s)", (new_p_id, "Imported", freq))
+                imported_count += 1
+
+            conn.commit()
+
+        # Broadcast real-time inventory update
+        broadcast_sse_event("inventory_updated", {"imported": imported_count, "updated": updated_count})
+
+        return jsonify({
+            "status": "success",
+            "message": f"Successfully processed inventory: {imported_count} new SKUs inserted, {updated_count} SKUs updated.",
+            "imported": imported_count,
+            "updated": updated_count
+        })
+    except Exception as e:
+        return jsonify({"error": f"Failed to parse CSV: {str(e)}"}), 400
+    finally:
+        conn.close()
+
+@app.route("/api/orders/export", methods=["GET"])
+def export_orders_csv():
+    """Exports orders and line item stops to downloadable CSV."""
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT o.id as order_id, o.customer_name, o.status,
+                       oi.product_id, p.name as product_name, p.assigned_shelf_id as shelf_id, oi.quantity
+                FROM orders o
+                LEFT JOIN order_items oi ON o.id = oi.order_id
+                LEFT JOIN products p ON oi.product_id = p.id
+                ORDER BY o.id ASC
+            """)
+            rows = cur.fetchall()
+
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["order_id", "customer_name", "status", "product_id", "product_name", "shelf_id", "quantity"])
+        for r in rows:
+            writer.writerow([
+                r["order_id"],
+                r["customer_name"],
+                r["status"],
+                r["product_id"] or "",
+                r["product_name"] or "",
+                r["shelf_id"] or "",
+                r["quantity"] or ""
+            ])
+
+        output.seek(0)
+        return Response(output.getvalue(), mimetype="text/csv", headers={
+            "Content-Disposition": "attachment; filename=warehouse_orders_export.csv",
+            "Cache-Control": "no-cache"
         })
     finally:
         conn.close()

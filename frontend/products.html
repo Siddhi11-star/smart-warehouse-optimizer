@@ -13,6 +13,7 @@
   <script src="theme.js"></script>
   <script src="auth.js"></script>
   <script src="profile-settings.js"></script>
+  <script src="events.js"></script>
   <style>
     /* Product Tiles Grid System */
     .product-tiles-grid {
@@ -246,7 +247,16 @@
         <h1 class="page-title">Warehouse Product Catalog</h1>
         <p class="page-subtitle">Inventory master, categories, assigned shelf locations, and pick frequencies</p>
       </div>
-      <div>
+      <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+        <button class="btn btn-secondary" onclick="window.location.href='/api/inventory/export'" title="Download SKU inventory catalog as CSV">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export CSV
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('csv-file-input').click()" title="Upload &amp; bulk update inventory from CSV">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Import CSV
+        </button>
+        <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="uploadInventoryCSV(event)">
         <a href="layout.html" class="btn btn-primary">
           Optimize Layout
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -513,8 +523,42 @@
         const matchesCat = (cat === 'ALL') || (p.category === cat);
         return matchesSearch && matchesCat;
       });
-
       renderProducts(filtered);
+    }
+
+    function uploadInventoryCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const toastEl = document.createElement('div');
+      toastEl.className = 'toast show';
+      toastEl.textContent = 'Uploading and processing CSV...';
+      document.body.appendChild(toastEl);
+
+      fetch('/api/inventory/import', {
+        method: 'POST',
+        body: formData
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'success') {
+          toastEl.textContent = data.message;
+          setTimeout(() => toastEl.remove(), 3500);
+          loadProducts();
+        } else {
+          toastEl.textContent = data.error || 'Failed to import CSV';
+          setTimeout(() => toastEl.remove(), 4000);
+        }
+      })
+      .catch(err => {
+        toastEl.textContent = 'Network error while importing CSV.';
+        setTimeout(() => toastEl.remove(), 3000);
+      })
+      .finally(() => {
+        event.target.value = '';
+      });
     }
 
     document.addEventListener('DOMContentLoaded', loadProducts);
