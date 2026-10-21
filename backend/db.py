@@ -128,6 +128,8 @@ def init_sqlite_database():
     """Initializes schema and seeds default data into the SQLite database."""
     os.makedirs(os.path.dirname(SQLITE_DB_PATH), exist_ok=True)
     conn = sqlite3.connect(SQLITE_DB_PATH)
+    conn.create_function("GREATEST", -1, lambda *args: max(args) if args else 0)
+    conn.create_function("LEAST", -1, lambda *args: min(args) if args else 0)
     cur = conn.cursor()
 
     # Create tables
@@ -147,6 +149,7 @@ def init_sqlite_database():
             category TEXT NOT NULL,
             assigned_shelf_id INTEGER NULL,
             stock_quantity INTEGER NOT NULL DEFAULT 50,
+            volume REAL NOT NULL DEFAULT 1.0,
             FOREIGN KEY (assigned_shelf_id) REFERENCES shelves(id) ON DELETE SET NULL
         );
 
@@ -202,8 +205,243 @@ def init_sqlite_database():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
         );
+
+        CREATE TABLE IF NOT EXISTS warehouses (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            location TEXT NOT NULL,
+            coord_x REAL NOT NULL DEFAULT 0.0,
+            coord_y REAL NOT NULL DEFAULT 0.0,
+            service_zones TEXT NOT NULL DEFAULT 'Zone A, Zone B'
+        );
+
+        CREATE TABLE IF NOT EXISTS vehicles (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            vehicle_type TEXT NOT NULL,
+            max_capacity REAL NOT NULL,
+            current_load REAL NOT NULL DEFAULT 0.0,
+            location TEXT NOT NULL DEFAULT 'WH-01',
+            status TEXT NOT NULL DEFAULT 'Available',
+            cost_per_km REAL NOT NULL DEFAULT 1.85,
+            fixed_cost REAL NOT NULL DEFAULT 25.00,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (location) REFERENCES warehouses(id) ON DELETE RESTRICT
+        );
+
+        CREATE TABLE IF NOT EXISTS vehicle_assignments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            vehicle_id TEXT NOT NULL,
+            order_id INTEGER NOT NULL,
+            run_id INTEGER NULL,
+            assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            status TEXT NOT NULL DEFAULT 'Assigned',
+            FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+            FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS balancing_runs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            status TEXT NOT NULL DEFAULT 'Proposed',
+            total_vehicles INTEGER NOT NULL DEFAULT 0,
+            assigned_orders_count INTEGER NOT NULL DEFAULT 0,
+            unassigned_orders_count INTEGER NOT NULL DEFAULT 0,
+            fleet_utilization_pct REAL NOT NULL DEFAULT 0.0,
+            cost_before REAL NOT NULL DEFAULT 0.0,
+            cost_after REAL NOT NULL DEFAULT 0.0,
+            cost_savings REAL NOT NULL DEFAULT 0.0,
+            distance_before REAL NOT NULL DEFAULT 0.0,
+            distance_after REAL NOT NULL DEFAULT 0.0,
+            summary_json TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS waves (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'Draft',
+            strategy TEXT NOT NULL DEFAULT 'Hybrid',
+            priority TEXT NOT NULL DEFAULT 'Standard',
+            assigned_picker TEXT NULL,
+            max_cart_capacity INTEGER NOT NULL DEFAULT 35,
+            total_orders INTEGER NOT NULL DEFAULT 0,
+            total_skus INTEGER NOT NULL DEFAULT 0,
+            total_units INTEGER NOT NULL DEFAULT 0,
+            picked_units INTEGER NOT NULL DEFAULT 0,
+            estimated_distance_m REAL NOT NULL DEFAULT 0.0,
+            unbatched_distance_m REAL NOT NULL DEFAULT 0.0,
+            distance_saved_m REAL NOT NULL DEFAULT 0.0,
+            scheduled_at TIMESTAMP NULL,
+            deadline TIMESTAMP NULL,
+            started_at TIMESTAMP NULL,
+            completed_at TIMESTAMP NULL,
+            notes TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS wave_orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            wave_id TEXT NOT NULL,
+            order_id INTEGER NOT NULL,
+            status TEXT NOT NULL DEFAULT 'Assigned',
+            assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (wave_id) REFERENCES waves(id) ON DELETE CASCADE,
+            FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS pick_tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            wave_id TEXT NOT NULL,
+            product_id INTEGER NOT NULL,
+            required_quantity INTEGER NOT NULL DEFAULT 1,
+            picked_quantity INTEGER NOT NULL DEFAULT 0,
+            shelf_id INTEGER NULL,
+            status TEXT NOT NULL DEFAULT 'Pending',
+            aisle_zone TEXT NULL,
+            sequence_order INTEGER NOT NULL DEFAULT 0,
+            exception_reason TEXT NULL,
+            picked_at TIMESTAMP NULL,
+            order_allocations TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (wave_id) REFERENCES waves(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_reservations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            wave_id TEXT NOT NULL,
+            product_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 1,
+            status TEXT NOT NULL DEFAULT 'Reserved',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (wave_id) REFERENCES waves(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS wave_exceptions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            wave_id TEXT NOT NULL,
+            task_id INTEGER NULL,
+            product_id INTEGER NULL,
+            exception_type TEXT NOT NULL,
+            details TEXT NOT NULL,
+            resolved INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (wave_id) REFERENCES waves(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS layout_snapshots (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            strategy TEXT NOT NULL DEFAULT 'velocity',
+            assignments_json TEXT NOT NULL,
+            travel_index_before REAL NOT NULL DEFAULT 0.0,
+            travel_index_after REAL NOT NULL DEFAULT 0.0,
+            reduction_pct REAL NOT NULL DEFAULT 0.0,
+            user_email TEXT NULL,
+            status TEXT NOT NULL DEFAULT 'applied',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS inventory_transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            movement_type TEXT NOT NULL,
+            quantity_change INTEGER NOT NULL,
+            previous_quantity INTEGER NOT NULL,
+            new_quantity INTEGER NOT NULL,
+            reason TEXT NULL,
+            reference_id TEXT NULL,
+            user_email TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            type TEXT NOT NULL,
+            title TEXT NOT NULL,
+            message TEXT NOT NULL,
+            severity TEXT NOT NULL DEFAULT 'info',
+            is_read INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     """)
     conn.commit()
+
+    # Migrate products table volume column if missing
+    cur.execute("PRAGMA table_info(products)")
+    existing_prod_cols = {col[1] for col in cur.fetchall()}
+    if "volume" not in existing_prod_cols:
+        cur.execute("ALTER TABLE products ADD COLUMN volume REAL NOT NULL DEFAULT 1.0")
+        cur.execute("UPDATE products SET volume = 3.5 WHERE category = 'Heavy'")
+        cur.execute("UPDATE products SET volume = 1.5 WHERE category = 'Fragile'")
+        cur.execute("UPDATE products SET volume = 1.0 WHERE category = 'Tools'")
+        cur.execute("UPDATE products SET volume = 0.5 WHERE category = 'Electronics'")
+        cur.execute("UPDATE products SET volume = 0.1 WHERE category = 'Fasteners'")
+        conn.commit()
+
+    # Migrate products table sku, reorder_threshold, unit_price, is_archived if missing
+    if "sku" not in existing_prod_cols:
+        cur.execute("ALTER TABLE products ADD COLUMN sku TEXT NULL")
+        cur.execute("ALTER TABLE products ADD COLUMN reorder_threshold INTEGER NOT NULL DEFAULT 15")
+        cur.execute("ALTER TABLE products ADD COLUMN unit_price REAL NOT NULL DEFAULT 19.99")
+        cur.execute("ALTER TABLE products ADD COLUMN is_archived INTEGER NOT NULL DEFAULT 0")
+        conn.commit()
+
+        # Backfill default SKUs and unit prices for existing catalog items
+        cur.execute("SELECT id, name, category FROM products ORDER BY id ASC")
+        all_p = cur.fetchall()
+        cat_pfx = {"Heavy": "HV", "Fragile": "FR", "Electronics": "EL", "Tools": "TL", "Fasteners": "FA", "Safety": "SF"}
+        pr_map = {"Heavy": 89.99, "Fragile": 129.50, "Electronics": 49.99, "Tools": 34.50, "Fasteners": 12.00, "Safety": 24.75}
+        counts = {}
+        for p_id, p_nm, p_cat in all_p:
+            c = counts.get(p_cat, 0) + 1
+            counts[p_cat] = c
+            p_sku = f"SKU-{cat_pfx.get(p_cat, 'GN')}-{c:03d}"
+            p_price = pr_map.get(p_cat, 19.99)
+            cur.execute("UPDATE products SET sku = ?, unit_price = ?, reorder_threshold = 15, is_archived = 0 WHERE id = ?", (p_sku, p_price, p_id))
+        conn.commit()
+
+    # Migrate orders table columns if missing
+    cur.execute("PRAGMA table_info(orders)")
+    existing_cols = {col[1] for col in cur.fetchall()}
+    columns_to_add = [
+        ("weight", "REAL NOT NULL DEFAULT 15.0"),
+        ("destination_zone", "TEXT NOT NULL DEFAULT 'Zone A - Downtown'"),
+        ("priority", "TEXT NOT NULL DEFAULT 'Standard'"),
+        ("deadline", "TEXT NOT NULL DEFAULT '18:00'"),
+        ("warehouse_id", "TEXT NOT NULL DEFAULT 'WH-01'"),
+        ("assigned_vehicle_id", "TEXT NULL"),
+        ("total_amount", "REAL NOT NULL DEFAULT 0.0"),
+        ("created_at", "TEXT DEFAULT NULL")
+    ]
+    for col_name, col_def in columns_to_add:
+        if col_name not in existing_cols:
+            cur.execute(f"ALTER TABLE orders ADD COLUMN {col_name} {col_def}")
+    cur.execute("UPDATE orders SET created_at = datetime('now') WHERE created_at IS NULL")
+    conn.commit()
+
+    # Seed initial inventory transactions if empty
+    cur.execute("SELECT COUNT(*) FROM inventory_transactions")
+    if cur.fetchone()[0] == 0:
+        cur.execute("SELECT id, stock_quantity FROM products")
+        for p_id, s_qty in cur.fetchall():
+            cur.execute("""
+                INSERT INTO inventory_transactions (product_id, movement_type, quantity_change, previous_quantity, new_quantity, reason, user_email)
+                VALUES (?, 'INBOUND', ?, 0, ?, 'Initial warehouse stock receipt', 'system@warehouse.io')
+            """, (p_id, s_qty or 50, s_qty or 50))
+        conn.commit()
+
+    # Seed initial notifications if empty
+    cur.execute("SELECT COUNT(*) FROM notifications")
+    if cur.fetchone()[0] == 0:
+        cur.executemany("""
+            INSERT INTO notifications (type, title, message, severity) VALUES (?, ?, ?, ?)
+        """, [
+            ("SYSTEM", "Warehouse Engine Active", "Facility Digital Twin online with 24 storage shelves and Packing Dock S-01.", "success"),
+            ("LOW_STOCK", "Reorder Threshold Policy Active", "Standard reorder threshold set to 15 units across all catalog items.", "info")
+        ])
+        conn.commit()
 
     # Ensure demo user accounts are always seeded if missing
     cur.execute("SELECT COUNT(*) FROM users")
@@ -225,6 +463,68 @@ def init_sqlite_database():
             sqlite_users_data
         )
         conn.commit()
+
+    # Seed Warehouses if empty
+    cur.execute("SELECT COUNT(*) FROM warehouses")
+    if cur.fetchone()[0] == 0:
+        warehouses_seed = [
+            ("WH-01", "Central Distribution Center", "Downtown Logistics District", 0.0, 0.0, "Zone A - Downtown, Zone B - East Industrial"),
+            ("WH-02", "North Metro Logistics Hub", "North Industrial Park", 15.0, 22.0, "Zone C - North Suburbs, Zone D - Airport Logistics"),
+            ("WH-03", "West River Freight Depot", "West Port Corridor", -18.0, 10.0, "Zone E - West Harbor, Zone F - Tech Corridor")
+        ]
+        cur.executemany(
+            "INSERT INTO warehouses (id, name, location, coord_x, coord_y, service_zones) VALUES (?, ?, ?, ?, ?, ?)",
+            warehouses_seed
+        )
+        conn.commit()
+
+    # Seed Vehicles if empty
+    cur.execute("SELECT COUNT(*) FROM vehicles")
+    if cur.fetchone()[0] == 0:
+        vehicles_seed = [
+            ("VEH-101", "EcoVan Alpha", "Electric Van", 650.0, 0.0, "WH-01", "Available", 1.25, 15.00),
+            ("VEH-102", "Sprinter Beta", "Sprinter Van", 1200.0, 0.0, "WH-01", "Available", 1.75, 25.00),
+            ("VEH-103", "BoxMaster 01", "Box Truck", 2500.0, 0.0, "WH-01", "Available", 2.60, 40.00),
+            ("VEH-104", "Transporter Gamma", "Electric Van", 750.0, 0.0, "WH-02", "Available", 1.30, 18.00),
+            ("VEH-105", "HeavyHaul 01", "Heavy Hauler", 4000.0, 0.0, "WH-02", "Available", 3.50, 60.00),
+            ("VEH-106", "MetroVan Delta", "Cargo Van", 1000.0, 0.0, "WH-03", "Available", 1.65, 22.00),
+            ("VEH-107", "Express Cruiser", "Sprinter Van", 1100.0, 0.0, "WH-03", "Maintenance", 1.80, 25.00),
+            ("VEH-108", "City Runner 02", "Electric Van", 700.0, 0.0, "WH-03", "In Transit", 1.20, 16.00),
+        ]
+        cur.executemany(
+            "INSERT INTO vehicles (id, name, vehicle_type, max_capacity, current_load, location, status, cost_per_km, fixed_cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            vehicles_seed
+        )
+        conn.commit()
+
+    # Backfill or update sample orders 1 to 12 if they have default values
+    cur.execute("SELECT id, weight, warehouse_id FROM orders WHERE id <= 12")
+    existing_orders = cur.fetchall()
+    if existing_orders:
+        orders_meta = [
+            (1, 140.0, "Zone A - Downtown", "Urgent", "14:00", "WH-01"),
+            (2, 85.0, "Zone A - Downtown", "High", "16:00", "WH-01"),
+            (3, 210.0, "Zone B - East Industrial", "Standard", "18:00", "WH-01"),
+            (4, 95.0, "Zone B - East Industrial", "Standard", "18:00", "WH-01"),
+            (5, 320.0, "Zone A - Downtown", "High", "15:00", "WH-01"),
+            (6, 175.0, "Zone C - North Suburbs", "Urgent", "13:30", "WH-02"),
+            (7, 480.0, "Zone D - Airport Logistics", "Standard", "18:00", "WH-02"),
+            (8, 260.0, "Zone C - North Suburbs", "High", "16:30", "WH-02"),
+            (9, 115.0, "Zone D - Airport Logistics", "Low", "Tomorrow 10:00", "WH-02"),
+            (10, 520.0, "Zone E - West Harbor", "Standard", "17:00", "WH-03"),
+            (11, 180.0, "Zone F - Tech Corridor", "High", "15:30", "WH-03"),
+            (12, 290.0, "Zone E - West Harbor", "Urgent", "14:00", "WH-03"),
+        ]
+        # Only update if they appear un-migrated (e.g. weight == 15.0 for all)
+        cur.execute("SELECT COUNT(DISTINCT weight) FROM orders WHERE id <= 12")
+        distinct_weights = cur.fetchone()[0]
+        if distinct_weights <= 1:
+            for o_id, wt, zone, prio, dl, wh in orders_meta:
+                cur.execute(
+                    "UPDATE orders SET weight = ?, destination_zone = ?, priority = ?, deadline = ?, warehouse_id = ? WHERE id = ?",
+                    (wt, zone, prio, dl, wh, o_id)
+                )
+            conn.commit()
 
     # Check if warehouse topology is already seeded
     cur.execute("SELECT COUNT(*) FROM shelves")
@@ -383,9 +683,109 @@ def get_sqlite_connection():
 
     raw_conn = sqlite3.connect(SQLITE_DB_PATH)
     raw_conn.row_factory = sqlite3.Row
-    # Register GREATEST function for compatibility
-    raw_conn.create_function("GREATEST", -1, max)
+    # Register GREATEST and LEAST function for compatibility
+    raw_conn.create_function("GREATEST", -1, lambda *args: max(args) if args else 0)
+    raw_conn.create_function("LEAST", -1, lambda *args: min(args) if args else 0)
     return SQLiteConnectionWrapper(raw_conn)
+
+
+_MYSQL_MIGRATED = False
+
+def ensure_mysql_migrations(conn):
+    global _MYSQL_MIGRATED
+    if _MYSQL_MIGRATED:
+        return
+    try:
+        with conn.cursor() as cur:
+            # Check products columns
+            cur.execute("""
+                SELECT COLUMN_NAME FROM information_schema.COLUMNS 
+                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products'
+            """)
+            prod_cols = {r["COLUMN_NAME"] if isinstance(r, dict) else r[0] for r in cur.fetchall()}
+            if "volume" not in prod_cols:
+                cur.execute("ALTER TABLE products ADD COLUMN volume FLOAT NOT NULL DEFAULT 1.0")
+                cur.execute("UPDATE products SET volume = 3.5 WHERE category = 'Heavy'")
+                cur.execute("UPDATE products SET volume = 1.5 WHERE category = 'Fragile'")
+                cur.execute("UPDATE products SET volume = 1.0 WHERE category = 'Tools'")
+                cur.execute("UPDATE products SET volume = 0.5 WHERE category = 'Electronics'")
+                cur.execute("UPDATE products SET volume = 0.1 WHERE category = 'Fasteners'")
+            if "sku" not in prod_cols:
+                cur.execute("ALTER TABLE products ADD COLUMN sku VARCHAR(50) NULL")
+                cur.execute("ALTER TABLE products ADD COLUMN reorder_threshold INT NOT NULL DEFAULT 15")
+                cur.execute("ALTER TABLE products ADD COLUMN unit_price FLOAT NOT NULL DEFAULT 19.99")
+                cur.execute("ALTER TABLE products ADD COLUMN is_archived TINYINT(1) NOT NULL DEFAULT 0")
+                # Backfill SKUs
+                cur.execute("SELECT id, name, category FROM products ORDER BY id ASC")
+                all_p = cur.fetchall()
+                cat_pfx = {"Heavy": "HV", "Fragile": "FR", "Electronics": "EL", "Tools": "TL", "Fasteners": "FA", "Safety": "SF"}
+                pr_map = {"Heavy": 89.99, "Fragile": 129.50, "Electronics": 49.99, "Tools": 34.50, "Fasteners": 12.00, "Safety": 24.75}
+                counts = {}
+                for p_row in all_p:
+                    p_id = p_row["id"] if isinstance(p_row, dict) else p_row[0]
+                    p_cat = p_row["category"] if isinstance(p_row, dict) else p_row[2]
+                    c = counts.get(p_cat, 0) + 1
+                    counts[p_cat] = c
+                    p_sku = f"SKU-{cat_pfx.get(p_cat, 'GN')}-{c:03d}"
+                    p_price = pr_map.get(p_cat, 19.99)
+                    cur.execute("UPDATE products SET sku = %s, unit_price = %s, reorder_threshold = 15, is_archived = 0 WHERE id = %s", (p_sku, p_price, p_id))
+
+            # Check orders columns
+            cur.execute("""
+                SELECT COLUMN_NAME FROM information_schema.COLUMNS 
+                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders'
+            """)
+            ord_cols = {r["COLUMN_NAME"] if isinstance(r, dict) else r[0] for r in cur.fetchall()}
+            if "total_amount" not in ord_cols:
+                cur.execute("ALTER TABLE orders ADD COLUMN total_amount FLOAT NOT NULL DEFAULT 0.0")
+            if "created_at" not in ord_cols:
+                cur.execute("ALTER TABLE orders ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS layout_snapshots (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    strategy VARCHAR(50) NOT NULL DEFAULT 'velocity',
+                    assignments_json MEDIUMTEXT NOT NULL,
+                    travel_index_before FLOAT NOT NULL DEFAULT 0.0,
+                    travel_index_after FLOAT NOT NULL DEFAULT 0.0,
+                    reduction_pct FLOAT NOT NULL DEFAULT 0.0,
+                    user_email VARCHAR(120) NULL,
+                    status VARCHAR(50) NOT NULL DEFAULT 'applied',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB;
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS inventory_transactions (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    product_id INT NOT NULL,
+                    movement_type VARCHAR(50) NOT NULL,
+                    quantity_change INT NOT NULL,
+                    previous_quantity INT NOT NULL,
+                    new_quantity INT NOT NULL,
+                    reason VARCHAR(255) NULL,
+                    reference_id VARCHAR(100) NULL,
+                    user_email VARCHAR(120) NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CONSTRAINT fk_inv_prod FOREIGN KEY (product_id)
+                        REFERENCES products(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB;
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS notifications (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    type VARCHAR(50) NOT NULL,
+                    title VARCHAR(150) NOT NULL,
+                    message TEXT NOT NULL,
+                    severity VARCHAR(20) NOT NULL DEFAULT 'info',
+                    is_read TINYINT(1) NOT NULL DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB;
+            """)
+        _MYSQL_MIGRATED = True
+    except Exception as e:
+        print(f"[MySQL Migration Warning] {e}")
 
 
 def get_db():
@@ -399,6 +799,7 @@ def get_db():
         try:
             conn = pymysql.connect(**DB_CONFIG)
             ACTIVE_DB_TYPE = "mysql"
+            ensure_mysql_migrations(conn)
             return conn
         except (pymysql.err.OperationalError, pymysql.err.InternalError, pymysql.err.ProgrammingError) as err:
             if ACTIVE_DB_TYPE != "sqlite":

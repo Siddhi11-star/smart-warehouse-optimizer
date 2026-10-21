@@ -6,7 +6,7 @@
 <title>Manager Dashboard | Warehouse Optimizer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="powerbi.css">
 <link rel="stylesheet" href="style.css">
 <script src="theme.js"></script>
@@ -15,56 +15,144 @@
 <script src="events.js"></script>
 <style>
 :root {
-  --primary: #777C6D; --primary-hover: #626659; --accent: #B7B89F;
-  --bg-main: #EEEEEE; --card-bg: #FFFFFF; --border-color: #CBCBCB;
-  --text-main: #1E201E; --text-secondary: #555555;
-  --good: #5E7A52; --warn: #B8892F; --bad: #A24A3E; --info: #5B7C8D;
-  --nav-bg: #2B2E28; --soft: rgba(183,184,159,.22);
-  --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --shadow: 0 6px 18px rgba(30,32,30,.07); --shadow-lg: 0 16px 36px rgba(30,32,30,.14);
+  --card: #F7F5E9;
+  --ring: #A95C64;
+  --input: #946F5C;
+  --muted: #E9C9BE;
+  --accent: #E9C9BE;
+  --border: #946F5C;
+  --radius: 0px;
+  --chart-1: #A95C64;
+  --chart-2: #946F5C;
+  --chart-3: #C9A188;
+  --chart-4: #C3A697;
+  --chart-5: #A87D77;
+  --popover: #FFFFFF;
+  --primary: #A95C64;
+  --sidebar: #EBCABF;
+  --spacing: 0.25rem;
+  --font-mono: Menlo, monospace;
+  --font-sans: 'DM Sans', sans-serif;
+  --secondary: #C3A697;
+  --background: #F7F5E9;
+  --font-serif: Georgia, serif;
+  --foreground: #503E33;
+  --destructive: #1F1C18;
+  --shadow-blur: 0px;
+  --shadow-color: #503E33;
+  --sidebar-ring: #A95C64;
+  --shadow-spread: 2px;
+  --letter-spacing: 0em;
+  --shadow-opacity: 1;
+  --sidebar-accent: #C9A188;
+  --sidebar-border: #A87D77;
+  --card-foreground: #503E33;
+  --shadow-offset-x: 2px;
+  --shadow-offset-y: 2px;
+  --sidebar-primary: #A95C64;
+  --muted-foreground: #946F5C;
+  --accent-foreground: #503E33;
+  --popover-foreground: #503E33;
+  --primary-foreground: #FFFFFF;
+  --sidebar-foreground: #503E33;
+  --secondary-foreground: #FFFFFF;
+  --destructive-foreground: #FFFFFF;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-primary-foreground: #FFFFFF;
+
+  --primary-hover: #904850;
+  --bg-main: var(--background);
+  --card-bg: #FFFFFF;
+  --border-color: rgba(148, 111, 92, 0.35);
+  --text-main: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --good: var(--primary);
+  --warn: #D98850;
+  --bad: var(--destructive);
+  --info: var(--secondary);
+  --nav-bg: #43332A;
+  --soft: rgba(169, 92, 100, 0.10);
+  --shadow: 0 4px 16px rgba(80, 62, 51, 0.08);
+  --shadow-lg: 0 16px 36px rgba(80, 62, 51, 0.12);
+
   /* Profile modal theme mappings */
   --pbi-tile-bg: var(--card-bg);
   --pbi-border: var(--border-color);
-  --pbi-border-highlight: var(--accent);
+  --pbi-border-highlight: var(--primary);
   --pbi-text-header: var(--text-main);
   --pbi-text-dim: var(--text-secondary);
   --pbi-header-ribbon: var(--card-bg);
   --pbi-tile-hover: var(--soft);
 }
-[data-theme="dark"] {
-  --bg-main: #1A1C19; --card-bg: #242722; --border-color: #3A3E37;
-  --text-main: #EEEEEE; --text-secondary: #B4B6AE; --nav-bg: #121411; --soft: rgba(183,184,159,.14);
-  --shadow: 0 6px 18px rgba(0,0,0,.35); --shadow-lg: 0 16px 36px rgba(0,0,0,.5);
+
+.dark, [data-theme="dark"] {
+  --card: #3C332E;
+  --ring: #C9A188;
+  --input: #503E33;
+  --muted: #503E33;
+  --accent: #C3A697;
+  --border: #503E33;
+  --radius: 0px;
+  --chart-1: #C9A188;
+  --chart-2: #C3A697;
+  --chart-3: #A95C64;
+  --chart-4: #946F5C;
+  --chart-5: #A87D77;
+  --popover: #3C332E;
+  --primary: #C9A188;
+  --sidebar: #1F1A17;
+  --spacing: 0.25rem;
+  --font-mono: Menlo, monospace;
+  --font-sans: 'DM Sans', sans-serif;
+  --secondary: #946F5C;
+  --background: #2B2421;
+  --font-serif: Georgia, serif;
+  --foreground: #F7F5E9;
+  --destructive: #E57373;
+  --shadow-blur: 0px;
+  --shadow-color: #503E33;
+  --sidebar-ring: #C9A188;
+  --shadow-spread: 2px;
+  --letter-spacing: 0em;
+  --shadow-opacity: 1;
+  --sidebar-accent: #C3A697;
+  --sidebar-border: #503E33;
+  --card-foreground: #F7F5E9;
+  --shadow-offset-x: 2px;
+  --shadow-offset-y: 2px;
+  --sidebar-primary: #C9A188;
+  --muted-foreground: #C5AA9B;
+  --accent-foreground: #2B2421;
+  --popover-foreground: #F7F5E9;
+  --primary-foreground: #2B2421;
+  --sidebar-foreground: #F7F5E9;
+  --secondary-foreground: #F7F5E9;
+  --destructive-foreground: #2B2421;
+  --sidebar-accent-foreground: #1F1A17;
+  --sidebar-primary-foreground: #1F1A17;
+
+  --primary-hover: #DEB8A0;
+  --bg-main: var(--background);
+  --card-bg: var(--card);
+  --border-color: var(--border);
+  --text-main: var(--foreground);
+  --text-secondary: var(--muted-foreground);
+  --nav-bg: var(--sidebar);
+  --soft: rgba(201, 161, 136, 0.14);
+  --good: var(--primary);
+  --warn: #E09A5A;
+  --bad: var(--destructive);
+  --info: var(--accent);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.7);
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font-sans); background: var(--bg-main); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; transition: background .3s, color .3s; }
 a { color: inherit; text-decoration: none; }
 button, select { font-family: inherit; }
 svg { display: block; }
 .wrap { width: min(1280px, 100% - 40px); margin-inline: auto; }
-
-/* Top nav */
-.topbar { background: var(--nav-bg); color: #EEE; position: sticky; top: 0; z-index: 50; }
-.topbar .wrap { display: flex; align-items: center; gap: 20px; height: 66px; width: min(1400px, 100% - 32px); }
-.brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: inherit; }
-.brand-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--primary); display: grid; place-items: center; color: #fff; text-decoration: none; cursor: pointer; transition: transform .2s, background .2s, box-shadow .2s; }
-.brand-icon:hover { transform: translateY(-2px); background: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,.25); }
-.brand strong { display: block; font-size: .95rem; font-weight: 800; line-height: 1.1; }
-.brand small { font-family: var(--font-mono); font-size: .6rem; color: #9a9c94; letter-spacing: .04em; }
-.nav { display: flex; gap: 4px; flex: 1; overflow-x: auto; scrollbar-width: none; }
-.nav::-webkit-scrollbar { display: none; }
-.nav a { padding: 8px 14px; border-radius: 9px; font-size: .86rem; font-weight: 500; color: #B4B6AE; white-space: nowrap; transition: background .2s, color .2s; }
-.nav a:hover { background: rgba(255,255,255,.07); color: #fff; }
-.nav a.active { background: rgba(183,184,159,.2); color: #fff; font-weight: 600; }
-.user { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: .75rem; font-weight: 700; cursor: pointer; transition: transform .2s; }
-.avatar:hover { transform: scale(1.08); }
-.user-meta { cursor: pointer; }
-.user-meta b { display: block; font-size: .82rem; line-height: 1.1; }
-.user-meta span { font-size: .68rem; color: #9a9c94; }
-.ib { width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgba(255,255,255,.15); background: transparent; color: #EEE; display: grid; place-items: center; cursor: pointer; transition: transform .2s, border-color .2s; }
-.ib:hover { transform: translateY(-2px); border-color: var(--accent); }
 
 main { padding: 28px 0 56px; display: grid; gap: 20px; }
 .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow); }
@@ -255,7 +343,7 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
 
     <section class="quick">
       <a class="card qa" href="layout.html"><div><h3>Run Slotting Optimizer</h3><p>Move fast-selling items closer to packing</p></div><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.100-.1-2.900a2.200 2.200 0 00-2.900-.1zM12 15l-3-3a22 22 0 012-3.900A12.900 12.900 0 0122 2c0 2.700-.8 7.500-6 11a22 22 0 01-4 2z"/></svg></span></a>
-      <a class="card qa" href="graph.html"><div><h3>Facility Graph Floorplan</h3><p>Inspect 25 storage shelves &amp; aisles</p></div><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.500"/><circle cx="19" cy="6" r="2.500"/><circle cx="12" cy="18" r="2.500"/><path d="M7.500 6h9M6.500 8l4 8M17.500 8l-4 8"/></svg></span></a>
+      <a class="card qa" href="graph.html"><div><h3>Facility Graph Floorplan</h3><p>Inspect 24 storage shelves + 1 packing dock</p></div><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.500"/><circle cx="19" cy="6" r="2.500"/><circle cx="12" cy="18" r="2.500"/><path d="M7.500 6h9M6.500 8l4 8M17.500 8l-4 8"/></svg></span></a>
       <a class="card qa" href="products.html"><div><h3>Inventory Catalog &amp; Stock</h3><p>Manage 60 SKUs &amp; restocking levels</p></div><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3.300 7.500L12 12.500l8.700-5M12 22V12.500"/></svg></span></a>
     </section>
 
@@ -864,7 +952,7 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
   $('wAvatar').textContent = initials;
 
 
-  /* ---- Demo data ---- */
+  /* ---- Live Database Integration ---- */
   var TOURS = {
     today: [['08:00',120,78],['10:00',138,84],['12:00',104,71],['14:00',150,92],['16:00',126,80]],
     '7d':  [['Mon',142,92],['Tue',156,96],['Wed',128,84],['Thu',134,88],['Fri',150,94],['Sat',112,76],['Sun',98,70]],
@@ -876,34 +964,33 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
   var ENG  = { all: 1, '2opt': .94, nn: 1.06, sshape: 1.14 };
   var FLEET = [['P. Sharma',82],['R. Iyer',76],['A. Khan',79],['M. Joshi',73],['S. Patil',81]];
   var TIERS = [['Tier A (Fast)',25,'#5E7A52'],['Tier B (Med)',20,'#5B7C8D'],['Tier C (Bulk)',15,'#B8892F']];
-  var ALERTS = [
-    ['#A24A3E','SKU-1042 below reorder point','Stock 12 · Shelf B-07'],
-    ['#B8892F','SKU-0318 moved to Tier A','Re-slot suggested to Shelf A-02'],
-    ['#B8892F','Aisle C-3 congestion risk','3 pickers scheduled in same wave'],
-    ['#5E7A52','Wave #218 optimized','Saved 41 m vs baseline']
-  ];
-  var AUDIT = [
-    ['21:14','alex.morgan','Ran Slotting Optimizer','47 SKUs re-slotted','Success','#5E7A52'],
-    ['20:52','fleet_lead','Rebalanced Wave #217','Gini 0.19 → 0.14','Success','#5E7A52'],
-    ['19:30','picker_lead','Generated 2-Opt route','Zone A · 22 picks','Success','#5E7A52'],
-    ['18:05','alex.morgan','Blocked aisle C-3','Detour applied','Warning','#B8892F'],
-    ['16:41','system','Nightly stock sync','60 SKUs updated','Success','#5E7A52']
-  ];
+  var liveData = null;
 
   var state = { time: '7d', corr: 'all', eng: 'all' };
   var cur = { rows: [], kpi: {} };
 
   function compute() {
-    var f = CORR[state.corr], e = ENG[state.eng];
-    cur.rows = TOURS[state.time].map(function (r) {
+    var f = CORR[state.corr] || 1, e = ENG[state.eng] || 1;
+    cur.rows = (TOURS[state.time] || TOURS['7d']).map(function (r) {
       var b = Math.round(r[1] * f * 10) / 10 * (state.corr === 'all' ? 1 : 3.4);
       var o = b * (r[2] / r[1]) * e;
       return { l: r[0], b: Math.round(b), o: Math.round(o), p: Math.round((1 - o / b) * 1000) / 10 };
     });
     var sb = 0, so = 0;
     cur.rows.forEach(function (r) { sb += r.b; so += r.o; });
-    var orders = Math.max(1, Math.round(ORDERS[state.time] * f));
-    cur.kpi = { eff: Math.round((1 - so / sb) * 1000) / 10, saved: Math.round((sb - so) * Math.max(1, orders / cur.rows.length / 2)), orders: orders };
+    var ordCount = (liveData && liveData.total_orders) ? liveData.total_orders : Math.max(1, Math.round(ORDERS[state.time] * f));
+    var effGain = (liveData && liveData.percent_reduction !== undefined) ? liveData.percent_reduction : Math.round((1 - so / sb) * 1000) / 10;
+    var distSaved = (liveData && liveData.total_distance_saved !== undefined) ? liveData.total_distance_saved : Math.round((sb - so) * Math.max(1, ordCount / cur.rows.length / 2));
+
+    cur.kpi = {
+      eff: effGain,
+      saved: distSaved,
+      orders: ordCount,
+      shelves: (liveData && liveData.total_shelves) ? liveData.total_shelves : 25,
+      products: (liveData && liveData.total_products) ? liveData.total_products : 60,
+      units: (liveData && liveData.total_units) ? liveData.total_units : 3000,
+      valuation: (liveData && liveData.total_valuation) ? liveData.total_valuation : 45000
+    };
   }
 
   function spark(color, pts) {
@@ -917,10 +1004,10 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
   function renderKpis() {
     var k = cur.kpi, pcts = cur.rows.map(function (r) { return r.p; });
     $('kpis').innerHTML =
-      kpiCard('#5E7A52', 'Pick efficiency gain', k.eff.toFixed(1) + '%', k.eff >= 30 ? '▲ Over target' : '▼ Below target', k.saved.toLocaleString() + ' meters total saved', pcts.length > 1 ? pcts : [1, 2]) +
-      kpiCard('#B8892F', 'Customer orders', k.orders.toLocaleString(), 'Live', 'Active fulfillment portfolio', cur.rows.map(function (r) { return r.b; })) +
-      kpiCard('#8A5A9B', 'Storage shelves', '25', '100% Active', '4 storage corridors + 1 packing hub', [5, 5, 6, 5, 6, 6]) +
-      kpiCard('#5B7C8D', 'Catalog SKUs', '60', '6 Categories', 'Class A/B/C Pareto slotted', [3, 4, 4, 5, 6, 7]);
+      kpiCard('#5E7A52', 'Pick efficiency gain', (k.eff || 0).toFixed(1) + '%', k.eff >= 30 ? '▲ Over target' : '▼ Below target', (k.saved || 0).toLocaleString() + ' meters total saved', pcts.length > 1 ? pcts : [1, 2]) +
+      kpiCard('#B8892F', 'Customer orders', (k.orders || 0).toLocaleString(), 'Live DB', 'Active fulfillment portfolio', cur.rows.map(function (r) { return r.b; })) +
+      kpiCard('#8A5A9B', 'Storage shelves', String(k.shelves || 25), '100% Active', (k.shelves || 25) + ' storage locations + 1 dock', [5, 5, 6, 5, 6, 6]) +
+      kpiCard('#5B7C8D', 'Catalog SKUs', String(k.products || 60), 'Live Master', (k.units || 0).toLocaleString() + ' units ($' + Math.round(k.valuation || 0).toLocaleString() + ')', [3, 4, 4, 5, 6, 7]);
   }
 
   function renderBars() {
@@ -947,19 +1034,26 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
   }
 
   function renderDonut() {
-    var total = 60, r = 70, c = 2 * Math.PI * r, off = 0, s = '<circle cx="95" cy="95" r="' + r + '" fill="none" stroke="var(--bg-main)" stroke-width="26"/>', lg = '';
+    var total = (liveData && liveData.total_products) ? liveData.total_products : 60;
+    if (liveData && liveData.sku_tier_counts) {
+      TIERS = [
+        ['Tier A (Fast)', liveData.sku_tier_counts.A || 12, '#5E7A52'],
+        ['Tier B (Med)', liveData.sku_tier_counts.B || 18, '#5B7C8D'],
+        ['Tier C (Bulk)', liveData.sku_tier_counts.C || 30, '#B8892F']
+      ];
+    }
+    var r = 70, c = 2 * Math.PI * r, off = 0, s = '<circle cx="95" cy="95" r="' + r + '" fill="none" stroke="var(--bg-main)" stroke-width="26"/>', lg = '';
     TIERS.forEach(function (t) {
-      var len = c * t[1] / total;
+      var len = c * t[1] / Math.max(1, total);
       s += '<circle cx="95" cy="95" r="' + r + '" fill="none" stroke="' + t[2] + '" stroke-width="26" stroke-dasharray="' + len + ' ' + (c - len) + '" stroke-dashoffset="' + (-off) + '" transform="rotate(-90 95 95)"><title>' + t[0] + ': ' + t[1] + ' SKUs</title></circle>';
       off += len;
-      lg += '<div style="--c:' + t[2] + '"><i></i>' + t[0] + '<span>' + Math.round(t[1] / total * 100) + '% (' + t[1] + ')</span></div>';
+      lg += '<div style="--c:' + t[2] + '"><i></i>' + t[0] + '<span>' + Math.round(t[1] / Math.max(1, total) * 100) + '% (' + t[1] + ')</span></div>';
     });
-    s += '<text x="95" y="98" text-anchor="middle" style="font-family:var(--font-mono);font-size:28px;font-weight:700;fill:var(--text-main)">60</text><text x="95" y="116" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--text-secondary)">TOTAL SKUS</text>';
+    s += '<text x="95" y="98" text-anchor="middle" style="font-family:var(--font-mono);font-size:28px;font-weight:700;fill:var(--text-main)">' + total + '</text><text x="95" y="116" text-anchor="middle" style="font-family:var(--font-mono);font-size:9px;fill:var(--text-secondary)">TOTAL SKUS</text>';
     $('donut').innerHTML = s; $('donutLg').innerHTML = lg;
   }
 
   function renderFleet() {
-    var f = state.time === 'today' ? .4 : state.time === '7d' ? 1 : 1;
     var vals = FLEET.map(function (p) { return Math.round(p[1] * (state.eng === 'nn' ? 1.08 : state.eng === 'sshape' ? 1.14 : 1)); });
     var mean = vals.reduce(function (a, b) { return a + b; }, 0) / vals.length, mx = Math.max.apply(null, vals);
     $('fleet').innerHTML = FLEET.map(function (p, i) {
@@ -969,38 +1063,104 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
     $('gini').textContent = (sum / (2 * vals.length * vals.length * mean)).toFixed(2);
   }
 
-  function renderStatic() {
-    $('alerts').innerHTML = ALERTS.map(function (a) { return '<div class="alert" style="--c:' + a[0] + '"><span class="bd"></span><div>' + a[1] + '<small>' + a[2] + '</small></div></div>'; }).join('');
-    $('audit').innerHTML = AUDIT.map(function (r) { return '<tr><td class="mono">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td><td><span class="st" style="--c:' + r[5] + '">' + r[4] + '</span></td></tr>'; }).join('');
+  function renderDynamicLogs() {
+    if (liveData && liveData.active_notifications && liveData.active_notifications.length > 0) {
+      $('alerts').innerHTML = liveData.active_notifications.map(function (a) {
+        var c = a.severity === 'CRITICAL' ? '#A24A3E' : (a.severity === 'WARNING' ? '#B8892F' : '#5E7A52');
+        var tStr = a.created_at ? a.created_at.slice(11, 16) : '';
+        return '<div class="alert" style="--c:' + c + '"><span class="bd"></span><div>' + a.title + '<small>' + a.message + (tStr ? ' &bull; ' + tStr : '') + '</small></div></div>';
+      }).join('');
+    } else {
+      var defaultAlerts = [
+        ['#5E7A52', 'Facility Online', 'All 24 storage shelves connected'],
+        ['#5B7C8D', 'Inventory Synchronized', 'Dynamic Pareto pick velocity active']
+      ];
+      $('alerts').innerHTML = defaultAlerts.map(function (a) { return '<div class="alert" style="--c:' + a[0] + '"><span class="bd"></span><div>' + a[1] + '<small>' + a[2] + '</small></div></div>'; }).join('');
+    }
+
+    if (liveData && liveData.recent_audit && liveData.recent_audit.length > 0) {
+      $('audit').innerHTML = liveData.recent_audit.map(function (r) {
+        var t = r.created_at ? r.created_at.slice(11, 16) : '--:--';
+        var isSuccess = String(r.status).toUpperCase() === 'SUCCESS';
+        var c = isSuccess ? '#5E7A52' : '#B8892F';
+        return '<tr><td class="mono">' + t + '</td><td>' + (r.email || 'system') + '</td><td>' + r.action + '</td><td>' + (r.details || '') + '</td><td><span class="st" style="--c:' + c + '">' + r.status + '</span></td></tr>';
+      }).join('');
+    }
   }
 
-  function render() { compute(); renderKpis(); renderBars(); renderFleet(); }
+  function render() {
+    compute();
+    renderKpis();
+    renderBars();
+    renderDonut();
+    renderFleet();
+    renderDynamicLogs();
+  }
 
-  function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(function () { t.classList.remove('show'); }, 2200); }
+  async function fetchLiveDashboard() {
+    try {
+      var res = await fetch('/api/statistics?time=' + encodeURIComponent(state.time) + '&corr=' + encodeURIComponent(state.corr) + '&eng=' + encodeURIComponent(state.eng));
+      if (res.ok) {
+        liveData = await res.json();
+      }
+    } catch (err) {
+      console.warn('Live stats fetch fallback to cached/computed values:', err);
+    }
+    render();
+    if (typeof loadManagerDashboard === 'function' && activeDashboardRole === 'manager') {
+      try { loadManagerDashboard(); } catch(e) {}
+    }
+  }
+
+  function toast(msg) {
+    var t = $('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast.t);
+    toast.t = setTimeout(function () { t.classList.remove('show'); }, 2500);
+  }
 
   /* ---- Events ---- */
   $('timeSeg').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     state.time = b.dataset.v;
     this.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-    render();
+    fetchLiveDashboard();
   });
-  $('corr').addEventListener('change', function () { state.corr = this.value; render(); });
-  $('eng').addEventListener('change', function () { state.eng = this.value; render(); });
-  $('refresh').addEventListener('click', function () {
+
+  $('corr').addEventListener('change', function () { state.corr = this.value; fetchLiveDashboard(); });
+  $('eng').addEventListener('change', function () { state.eng = this.value; fetchLiveDashboard(); });
+
+  $('refresh').addEventListener('click', async function () {
     var i = $('refIcon'); i.classList.remove('spin'); void i.getBoundingClientRect(); i.classList.add('spin');
-    render(); $('refreshed').textContent = 'Refreshed ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    toast('Dashboard data refreshed');
+    await fetchLiveDashboard();
+    $('refreshed').textContent = 'Refreshed ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    toast('Live database data refreshed');
   });
-  $('simulate').addEventListener('click', function () {
-    ORDERS[state.time] += 1; render(); toast('Simulated order added to the queue');
+
+  $('simulate').addEventListener('click', async function () {
+    var btn = $('simulate');
+    btn.disabled = true;
+    try {
+      var res = await fetch('/api/orders/simulate', { method: 'POST' });
+      var data = await res.json();
+      if (res.ok) {
+        toast('✓ Simulated Order #' + data.order_id + ' created in database');
+        await fetchLiveDashboard();
+      } else {
+        toast('Error: ' + (data.error || 'Simulation failed'));
+      }
+    } catch (e) {
+      toast('Network error during order simulation');
+    } finally {
+      btn.disabled = false;
+    }
   });
+
   $('export').addEventListener('click', function () {
-    var csv = 'period,baseline_m,optimized_m,reduction_pct\n' + cur.rows.map(function (r) { return [r.l, r.b, r.o, r.p].join(','); }).join('\n');
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    a.download = 'warehouse-' + state.time + '-tours.csv'; a.click(); URL.revokeObjectURL(a.href);
-    toast('CSV exported');
+    window.location.href = '/api/reports/analytics?format=csv';
+    toast('Analytics CSV export initiated');
   });
 
   // View Earnings & Bonus
@@ -1045,7 +1205,7 @@ tbody tr { transition: background .15s; } tbody tr:hover { background: var(--sof
     setTimeout(function () { openProfileSettingsModal('earnings'); }, 150);
   }
 
-  renderDonut(); renderStatic(); render();
+  fetchLiveDashboard();
 })();
 </script>
 </body>

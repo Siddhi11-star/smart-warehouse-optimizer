@@ -18,38 +18,67 @@
 /* ========================================================================== */
 
 :root {
-  --pbi-canvas-bg: #0f1015;
-  --pbi-tile-bg: #181a22;
-  --pbi-tile-hover: #1f222d;
-  --pbi-border: rgba(255, 255, 255, 0.08);
-  --pbi-border-highlight: rgba(255, 255, 255, 0.16);
-  --pbi-gold: #F2C811;
-  --pbi-gold-glow: rgba(242, 200, 17, 0.2);
-  --pbi-blue: #118DFF;
-  --pbi-teal: #00BFA5;
-  --pbi-green: #107C41;
-  --pbi-green-light: #22c55e;
-  --pbi-red: #D83B01;
-  --pbi-purple: #B146C2;
-  --pbi-slate: #8B95A5;
-  --pbi-text-header: #FFFFFF;
-  --pbi-text-body: #E1E4EA;
-  --pbi-text-dim: #9AA0AC;
-  --pbi-header-ribbon: #14161f;
-  --pbi-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --pbi-canvas-bg: var(--background, #F7F5E9);
+  --pbi-tile-bg: #FFFFFF;
+  --pbi-tile-hover: #F2EEDB;
+  --pbi-border: rgba(148, 111, 92, 0.35);
+  --pbi-border-highlight: var(--primary, #A95C64);
+  --pbi-gold: #D98850;
+  --pbi-gold-glow: rgba(217, 136, 80, 0.2);
+  --pbi-blue: #C3A697;
+  --pbi-teal: var(--primary, #A95C64);
+  --pbi-green: var(--chart-3, #C9A188);
+  --pbi-green-light: #C9A188;
+  --pbi-red: var(--destructive, #1F1C18);
+  --pbi-purple: #A87D77;
+  --pbi-slate: var(--muted-foreground, #946F5C);
+  --pbi-text-header: var(--foreground, #503E33);
+  --pbi-text-body: var(--foreground, #503E33);
+  --pbi-text-dim: var(--muted-foreground, #946F5C);
+  --pbi-header-ribbon: #FFFFFF;
+  --pbi-card-shadow: 0 2px 8px rgba(80, 62, 51, 0.08);
 }
 
 [data-theme="light"] {
-  --pbi-canvas-bg: #F0F2F6;
+  --pbi-canvas-bg: var(--background, #F7F5E9);
   --pbi-tile-bg: #FFFFFF;
-  --pbi-tile-hover: #F8F9FB;
-  --pbi-border: #D8DCE3;
-  --pbi-border-highlight: #B0B7C3;
-  --pbi-text-header: #111827;
-  --pbi-text-body: #1F2937;
-  --pbi-text-dim: #64748B;
+  --pbi-tile-hover: #F2EEDB;
+  --pbi-border: rgba(148, 111, 92, 0.35);
+  --pbi-border-highlight: var(--primary, #A95C64);
+  --pbi-blue: #C3A697;
+  --pbi-teal: var(--primary, #A95C64);
+  --pbi-green: var(--chart-3, #C9A188);
+  --pbi-green-light: #C9A188;
+  --pbi-red: var(--destructive, #1F1C18);
+  --pbi-purple: #A87D77;
+  --pbi-slate: var(--muted-foreground, #946F5C);
+  --pbi-text-header: var(--foreground, #503E33);
+  --pbi-text-body: var(--foreground, #503E33);
+  --pbi-text-dim: var(--muted-foreground, #946F5C);
   --pbi-header-ribbon: #FFFFFF;
-  --pbi-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --pbi-card-shadow: 0 2px 8px rgba(80, 62, 51, 0.08);
+}
+
+.dark, [data-theme="dark"] {
+  --pbi-canvas-bg: var(--background, #2B2421);
+  --pbi-tile-bg: var(--card, #3C332E);
+  --pbi-tile-hover: #483E38;
+  --pbi-border: var(--border, #503E33);
+  --pbi-border-highlight: var(--primary, #C9A188);
+  --pbi-gold: #E09A5A;
+  --pbi-gold-glow: rgba(224, 154, 90, 0.2);
+  --pbi-blue: #C3A697;
+  --pbi-teal: var(--primary, #C9A188);
+  --pbi-green: var(--chart-2, #C3A697);
+  --pbi-green-light: #C3A697;
+  --pbi-red: var(--destructive, #E57373);
+  --pbi-purple: #A87D77;
+  --pbi-slate: var(--muted-foreground, #C5AA9B);
+  --pbi-text-header: var(--foreground, #F7F5E9);
+  --pbi-text-body: var(--foreground, #F7F5E9);
+  --pbi-text-dim: var(--muted-foreground, #C5AA9B);
+  --pbi-header-ribbon: var(--card, #3C332E);
+  --pbi-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* Power BI Top Ribbon / Command Bar */

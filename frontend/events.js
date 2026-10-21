@@ -168,12 +168,12 @@
   const style = document.createElement('style');
   style.textContent = `
     .sse-toast {
-      background: rgba(18, 20, 24, 0.94);
-      color: #fff;
+      background: var(--nav-bg, rgba(67, 51, 42, 0.95));
+      color: var(--card, #F7F5E9);
       padding: 10px 16px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(80, 62, 51, 0.35);
+      border: 1px solid var(--border-color, rgba(148, 111, 92, 0.35));
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -182,15 +182,16 @@
       max-width: 400px;
       animation: sseSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       transition: all 0.3s ease;
+      font-family: var(--font-sans, inherit);
     }
-    .sse-toast-order { border-left: 4px solid #f59e0b; }
-    .sse-toast-success { border-left: 4px solid #22c55e; }
-    .sse-toast-info { border-left: 4px solid #38bdf8; }
+    .sse-toast-order { border-left: 4px solid var(--primary, #A95C64); }
+    .sse-toast-success { border-left: 4px solid #10b981; }
+    .sse-toast-info { border-left: 4px solid var(--secondary, #C3A697); }
     .sse-toast-btn {
-      background: #f59e0b;
-      color: #000;
+      background: var(--primary, #A95C64);
+      color: #fff;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.74rem;
       font-weight: 700;
       text-decoration: none;

@@ -226,6 +226,9 @@ def seed_database():
     random.seed(42) # Deterministic for reproducible execution
 
     shelf_load_counter = {s: 0 for s in available_shelves}
+    cat_prefix = {"Heavy": "HV", "Fragile": "FR", "Electronics": "EL", "Tools": "TL", "Fasteners": "FA", "Safety": "SF"}
+    price_map = {"Heavy": 89.99, "Fragile": 129.50, "Electronics": 49.99, "Tools": 34.50, "Fasteners": 12.00, "Safety": 24.75}
+    sku_counter = {}
 
     for name, cat, avg_units in product_templates:
         # Pick a random shelf that hasn't exceeded initial load limit
@@ -234,16 +237,46 @@ def seed_database():
             valid_candidates = available_shelves
         assigned_shelf = random.choice(valid_candidates)
         shelf_load_counter[assigned_shelf] = shelf_load_counter.get(assigned_shelf, 0) + 1
-        products_data.append((name, cat, assigned_shelf))
+        vol_map = {"Heavy": 3.5, "Fragile": 1.5, "Tools": 1.0, "Electronics": 0.5, "Fasteners": 0.1}
+        vol = vol_map.get(cat, 1.0)
+        p_idx = sku_counter.get(cat, 0) + 1
+        sku_counter[cat] = p_idx
+        sku = f"SKU-{cat_prefix.get(cat, 'GN')}-{p_idx:03d}"
+        u_price = price_map.get(cat, 19.99)
+        reorder_th = 15
+        stock_qty = 50
+        products_data.append((name, cat, assigned_shelf, stock_qty, vol, sku, reorder_th, u_price, 0))
 
     cursor.executemany(
-        "INSERT INTO products (name, category, assigned_shelf_id) VALUES (%s, %s, %s)",
+        "INSERT INTO products (name, category, assigned_shelf_id, stock_quantity, volume, sku, reorder_threshold, unit_price, is_archived) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
         products_data
     )
 
     # Update current_load on shelves
     for s_id, load in shelf_load_counter.items():
         cursor.execute("UPDATE shelves SET current_load = %s WHERE id = %s", (load, s_id))
+
+    # Seed initial inbound inventory transactions
+    cursor.execute("SELECT id, stock_quantity FROM products ORDER BY id ASC")
+    seeded_prods = cursor.fetchall()
+    inv_tx_data = [
+        (p_row[0], "INBOUND", p_row[1], 0, p_row[1], "Initial warehouse stock receipt", "system@warehouse.io")
+        for p_row in seeded_prods
+    ]
+    cursor.executemany(
+        "INSERT INTO inventory_transactions (product_id, movement_type, quantity_change, previous_quantity, new_quantity, reason, user_email) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+        inv_tx_data
+    )
+
+    # Seed initial operational notifications
+    notifications_data = [
+        ("SYSTEM", "Warehouse Engine Active", "Facility Digital Twin online with 24 storage shelves and Packing Dock S-01.", "success"),
+        ("LOW_STOCK", "Reorder Threshold Policy Active", "Standard reorder threshold set to 15 units across all catalog items.", "info")
+    ]
+    cursor.executemany(
+        "INSERT INTO notifications (type, title, message, severity) VALUES (%s, %s, %s, %s)",
+        notifications_data
+    )
 
     print("Seeding monthly sales records for pick frequency calculation...")
     # Fetch inserted product IDs
@@ -267,17 +300,52 @@ def seed_database():
         sales_data
     )
 
+    print("Seeding warehouses and logistics hubs...")
+    warehouses_data = [
+        ("WH-01", "Central Distribution Center", "Downtown Logistics District", 0.0, 0.0, "Zone A - Downtown, Zone B - East Industrial"),
+        ("WH-02", "North Metro Logistics Hub", "North Industrial Park", 15.0, 22.0, "Zone C - North Suburbs, Zone D - Airport Logistics"),
+        ("WH-03", "West River Freight Depot", "West Port Corridor", -18.0, 10.0, "Zone E - West Harbor, Zone F - Tech Corridor")
+    ]
+    cursor.executemany(
+        "INSERT INTO warehouses (id, name, location, coord_x, coord_y, service_zones) VALUES (%s, %s, %s, %s, %s, %s)",
+        warehouses_data
+    )
+
+    print("Seeding vehicles fleet...")
+    vehicles_data = [
+        ("VEH-101", "EcoVan Alpha", "Electric Van", 650.0, 0.0, "WH-01", "Available", 1.25, 15.00),
+        ("VEH-102", "Sprinter Beta", "Sprinter Van", 1200.0, 0.0, "WH-01", "Available", 1.75, 25.00),
+        ("VEH-103", "BoxMaster 01", "Box Truck", 2500.0, 0.0, "WH-01", "Available", 2.60, 40.00),
+        ("VEH-104", "Transporter Gamma", "Electric Van", 750.0, 0.0, "WH-02", "Available", 1.30, 18.00),
+        ("VEH-105", "HeavyHaul 01", "Heavy Hauler", 4000.0, 0.0, "WH-02", "Available", 3.50, 60.00),
+        ("VEH-106", "MetroVan Delta", "Cargo Van", 1000.0, 0.0, "WH-03", "Available", 1.65, 22.00),
+        ("VEH-107", "Express Cruiser", "Sprinter Van", 1100.0, 0.0, "WH-03", "Maintenance", 1.80, 25.00),
+        ("VEH-108", "City Runner 02", "Electric Van", 700.0, 0.0, "WH-03", "In Transit", 1.20, 16.00),
+    ]
+    cursor.executemany(
+        "INSERT INTO vehicles (id, name, vehicle_type, max_capacity, current_load, location, status, cost_per_km, fixed_cost) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        vehicles_data
+    )
+
     print("Seeding 12 sample orders (Orders 1-9 for TSP, Orders 10-12 for Nearest-Neighbor)...")
     customers = [
-        "Apex Logistics Hub", "Starlight Manufacturing", "Apex Robotics Corp",
-        "Pinnacle Electronics Ltd", "Vanguard Industrial Supplies", "Titan Dynamics Ltd",
-        "Metro Heavy Works", "Orbital Precision Labs", "Horizon Automated Fab",
-        "Delta Mega Distribution", "Pacific Engineering Group", "Continental Assembly Corp"
+        ("Apex Logistics Hub", 140.0, "Zone A - Downtown", "Urgent", "14:00", "WH-01"),
+        ("Starlight Manufacturing", 85.0, "Zone A - Downtown", "High", "16:00", "WH-01"),
+        ("Apex Robotics Corp", 210.0, "Zone B - East Industrial", "Standard", "18:00", "WH-01"),
+        ("Pinnacle Electronics Ltd", 95.0, "Zone B - East Industrial", "Standard", "18:00", "WH-01"),
+        ("Vanguard Industrial Supplies", 320.0, "Zone A - Downtown", "High", "15:00", "WH-01"),
+        ("Titan Dynamics Ltd", 175.0, "Zone C - North Suburbs", "Urgent", "13:30", "WH-02"),
+        ("Metro Heavy Works", 480.0, "Zone D - Airport Logistics", "Standard", "18:00", "WH-02"),
+        ("Orbital Precision Labs", 260.0, "Zone C - North Suburbs", "High", "16:30", "WH-02"),
+        ("Horizon Automated Fab", 115.0, "Zone D - Airport Logistics", "Low", "Tomorrow 10:00", "WH-02"),
+        ("Delta Mega Distribution", 520.0, "Zone E - West Harbor", "Standard", "17:00", "WH-03"),
+        ("Pacific Engineering Group", 180.0, "Zone F - Tech Corridor", "High", "15:30", "WH-03"),
+        ("Continental Assembly Corp", 290.0, "Zone E - West Harbor", "Urgent", "14:00", "WH-03")
     ]
 
-    orders_data = [(i + 1, name, "Pending") for i, name in enumerate(customers)]
+    orders_data = [(i + 1, item[0], "Pending", item[1], item[2], item[3], item[4], item[5]) for i, item in enumerate(customers)]
     cursor.executemany(
-        "INSERT INTO orders (id, customer_name, status) VALUES (%s, %s, %s)",
+        "INSERT INTO orders (id, customer_name, status, weight, destination_zone, priority, deadline, warehouse_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
         orders_data
     )
 
