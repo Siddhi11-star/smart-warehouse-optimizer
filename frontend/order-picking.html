@@ -179,6 +179,18 @@
       </div>
     </div>
 
+    <!-- Dynamic Hazard Detour Warning Banner -->
+    <div id="detour-active-alert" class="alert alert-warning" style="display: none; margin-bottom: 1.25rem; background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.45); color: #b45309;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <div id="detour-alert-text">
+        <strong>⚠️ Active Hazard Detour:</strong> One or more warehouse aisles are currently marked as blocked. Routing engine dynamically detoured around obstructions.
+      </div>
+    </div>
+
     <!-- Route Results Grid -->
     <div id="results-container" style="display: none;">
 
@@ -328,6 +340,10 @@
               <span class="legend-swatch" style="background: #54656f; height: 3px; border-radius: 1px;"></span>
               Corridor Lanes
             </span>
+            <span class="route-legend-item">
+              <span class="legend-swatch" style="background: repeating-linear-gradient(45deg, #ef4444, #ef4444 3px, #fee2e2 3px, #fee2e2 6px); height: 5px; border-radius: 2px;"></span>
+              ⚠️ Blocked Hazard
+            </span>
           </div>
 
           <!-- Route Explanation Caption (Dedicated Row 1) -->
@@ -469,6 +485,15 @@
         const gRes = await fetch('/api/warehouse/graph');
         graphData = await gRes.json();
         updateShelfCountLabels();
+        if (graphData.blocked_corridors && graphData.blocked_corridors.length > 0) {
+          const alertDetour = document.getElementById('detour-active-alert');
+          if (alertDetour) {
+            alertDetour.style.display = 'flex';
+            document.getElementById('detour-alert-text').innerHTML = `
+              <strong>⚠️ Active Hazard Detour:</strong> ${graphData.blocked_corridors.length} corridor(s) currently marked as blocked. Routing engine dynamically detours around obstructions via safe crossways.
+            `;
+          }
+        }
       } catch (err) {
         console.error("Failed to load graph:", err);
       }
@@ -883,6 +908,20 @@
           document.getElementById('unreachable-alert-text').innerHTML = `
             <strong>Route Unreachable:</strong> ${currentRoute.error_message || 'Blocked corridors prevent accessing one or more shelf stops.'}
           `;
+        }
+
+        // Show active detour warning if corridors are blocked
+        const alertDetour = document.getElementById('detour-active-alert');
+        if (alertDetour) {
+          const blockedCount = currentRoute.blocked_corridors_count || (graphData.blocked_corridors ? graphData.blocked_corridors.length : 0);
+          if (currentRoute.has_hazard_detour || blockedCount > 0) {
+            alertDetour.style.display = 'flex';
+            document.getElementById('detour-alert-text').innerHTML = `
+              <strong>⚠️ Active Hazard Detour:</strong> ${blockedCount} corridor(s) currently marked as blocked. Routing engine dynamically detoured around obstructions via safe crossways.
+            `;
+          } else {
+            alertDetour.style.display = 'none';
+          }
         }
 
         document.getElementById('results-container').style.display = 'block';
@@ -1384,9 +1423,24 @@
         const v = nodeMap[e.to_shelf_id];
         if (!u || !v) return;
 
+        const isBlocked = graphData.blocked_corridors && graphData.blocked_corridors.some(b => {
+          const bMin = Math.min(b.from_shelf, b.to_shelf);
+          const bMax = Math.max(b.from_shelf, b.to_shelf);
+          const eMin = Math.min(e.from_shelf_id, e.to_shelf_id);
+          const eMax = Math.max(e.from_shelf_id, e.to_shelf_id);
+          return bMin === eMin && bMax === eMax;
+        });
+
         ctx.save();
-        ctx.strokeStyle = dark ? '#334155' : '#cbd5e1';
-        ctx.lineWidth = 2.5;
+        if (isBlocked) {
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 3.5;
+          ctx.setLineDash([7, 4]);
+        } else {
+          ctx.strokeStyle = dark ? '#334155' : '#cbd5e1';
+          ctx.lineWidth = 2.5;
+          ctx.setLineDash([]);
+        }
         ctx.beginPath();
         ctx.moveTo(u.x, u.y);
         ctx.lineTo(v.x, v.y);
@@ -1395,19 +1449,37 @@
         // Metric Distance Pill on Edge Midpoint
         const mx = (u.x + v.x) / 2;
         const my = (u.y + v.y) / 2;
-        ctx.fillStyle = dark ? '#1e293b' : '#ffffff';
-        ctx.strokeStyle = dark ? '#475569' : '#94a3b8';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.roundRect(mx - 16, my - 8, 32, 16, 4);
-        ctx.fill();
-        ctx.stroke();
 
-        ctx.fillStyle = dark ? '#94a3b8' : '#475569';
-        ctx.font = '700 8.5px "JetBrains Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`${e.distance}m`, mx, my);
+        if (isBlocked) {
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#fee2e2';
+          ctx.strokeStyle = '#dc2626';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect(mx - 28, my - 9, 56, 18, 5);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#b91c1c';
+          ctx.font = '800 8.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`⚠️ BLOCKED`, mx, my);
+        } else {
+          ctx.fillStyle = dark ? '#1e293b' : '#ffffff';
+          ctx.strokeStyle = dark ? '#475569' : '#94a3b8';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.roundRect(mx - 16, my - 8, 32, 16, 4);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = dark ? '#94a3b8' : '#475569';
+          ctx.font = '700 8.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${e.distance}m`, mx, my);
+        }
         ctx.restore();
       });
       ctx.restore();
