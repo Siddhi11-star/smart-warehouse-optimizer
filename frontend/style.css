@@ -323,6 +323,15 @@ html {
 body {
   font-family: var(--font-family);
   background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(217, 136, 80, 0.10) 0%, transparent 60%),
+    radial-gradient(circle at 90% 85%, rgba(201, 161, 136, 0.06) 0%, transparent 50%),
+    linear-gradient(to right, rgba(201, 161, 136, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(201, 161, 136, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 0px 0px, rgba(217, 136, 80, 0.28) 1.5px, transparent 1.5px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px, 48px 48px;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -330,6 +339,15 @@ body {
   display: flex;
   flex-direction: column;
   transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(169, 92, 100, 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 90% 85%, rgba(148, 111, 92, 0.05) 0%, transparent 50%),
+    linear-gradient(to right, rgba(148, 111, 92, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 111, 92, 0.07) 1px, transparent 1px),
+    radial-gradient(circle at 0px 0px, rgba(169, 92, 100, 0.22) 1.5px, transparent 1.5px);
 }
 
 /* Custom Scrollbars */
@@ -593,15 +611,28 @@ body {
 .card {
   background-color: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius, 10px);
   padding: 1.5rem;
   margin-bottom: 1.75rem;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
 }
 
+.dark .card, [data-theme="dark"] .card {
+  background-color: rgba(44, 37, 33, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 161, 136, 0.24);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 16px -4px rgba(217, 136, 80, 0.12);
+}
+
 .card:hover {
   box-shadow: var(--shadow-md);
+}
+
+.dark .card:hover, [data-theme="dark"] .card:hover {
+  border-color: rgba(217, 136, 80, 0.42);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 22px -2px rgba(217, 136, 80, 0.20);
 }
 
 .card-title {

@@ -137,17 +137,20 @@ svg { display: block; }
 
 /* Left brand panel */
 .brand-panel {
-  position: relative; overflow: hidden; background: #1F1A17; color: #F7F5E9;
+  position: relative; overflow: hidden; background: #161311; color: #F7F5E9;
   padding: 40px 56px; display: flex; flex-direction: column; justify-content: space-between;
 }
 .brand-panel::before {
-  content: ""; position: absolute; width: 560px; height: 560px; right: -180px; top: -160px;
-  background: radial-gradient(circle, rgba(169, 92, 100, 0.25), transparent 65%);
+  content: ""; position: absolute; width: 620px; height: 620px; right: -180px; top: -160px;
+  background: radial-gradient(circle, rgba(217, 136, 80, 0.20), rgba(169, 92, 100, 0.12) 40%, transparent 70%);
 }
 .brand-panel::after {
-  content: ""; position: absolute; inset: 0; opacity: .5;
-  background-image: linear-gradient(rgba(201, 161, 136, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(201, 161, 136, 0.12) 1px, transparent 1px);
-  background-size: 36px 36px;
+  content: ""; position: absolute; inset: 0; opacity: .75;
+  background-image:
+    linear-gradient(rgba(201, 161, 136, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 161, 136, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 0px 0px, rgba(217, 136, 80, 0.28) 1.5px, transparent 1.5px);
+  background-size: 48px 48px, 48px 48px, 48px 48px;
 }
 .brand-panel > * { position: relative; z-index: 1; }
 .brand { display: inline-flex; align-items: center; gap: 10px; }
@@ -168,18 +171,38 @@ svg { display: block; }
 .panel-stats div span { font-size: .75rem; color: #C5AA9B; }
 
 /* Right form panel */
-.form-panel { display: grid; place-items: center; padding: 32px 24px; position: relative; }
+.form-panel {
+  display: grid; place-items: center; padding: 32px 24px; position: relative;
+  background-color: var(--bg-main);
+  background-image:
+    radial-gradient(circle at 50% 25%, rgba(217, 136, 80, 0.12) 0%, transparent 65%),
+    linear-gradient(to right, rgba(201, 161, 136, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(201, 161, 136, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 0px 0px, rgba(217, 136, 80, 0.26) 1.5px, transparent 1.5px);
+  background-size: 100% 100%, 48px 48px, 48px 48px, 48px 48px;
+}
 .back-link {
   position: absolute; top: 24px; left: 28px; display: inline-flex; gap: 6px; align-items: center;
   font-size: .85rem; font-weight: 600; color: var(--text-secondary); transition: color .2s, transform .2s;
 }
 .back-link:hover { color: var(--text-main); transform: translateX(-3px); }
 .card {
-  width: min(440px, 100%); background: var(--card-bg); border: 1px solid var(--border-color);
-  border-radius: 20px; padding: 36px 32px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  width: min(440px, 100%);
+  background: rgba(44, 37, 33, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(201, 161, 136, 0.26);
+  border-radius: 20px; padding: 36px 32px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 20px -3px rgba(217, 136, 80, 0.14);
+  position: relative; overflow: hidden;
 }
-.card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
-.lock { width: 52px; height: 52px; border-radius: 14px; background: var(--primary); color: #fff; display: grid; place-items: center; margin: 0 auto 16px; }
+.card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #A95C64, #D98850, #C9A188); }
+[data-theme="light"] .card {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(148, 111, 92, 0.35);
+  box-shadow: 0 16px 36px rgba(80, 62, 51, 0.12);
+}
+.lock { width: 52px; height: 52px; border-radius: 14px; background: var(--primary); color: #fff; display: grid; place-items: center; margin: 0 auto 16px; box-shadow: 0 4px 14px rgba(217, 136, 80, 0.35); }
 .card h2 { text-align: center; font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; }
 .card .lead { text-align: center; font-size: .9rem; color: var(--text-secondary); margin: 6px 0 22px; }
 
